@@ -165,10 +165,12 @@ export interface NoteItem {
   updatedAt: string; // ISO 8601 string
 }
 
+import type { SupportedLanguage } from '@/lib/i18n';
+
 export type SnoozeDuration = 10 | 30 | 60; // minutes
 
 export type ThemeMode = 'light' | 'dark' | 'system';
-export type SupportedLanguage = 'en' | 'es' | 'fr' | 'de' | 'hi' | 'ja' | 'zh';
+export type { SupportedLanguage };
 
 export interface UserPreferences {
   theme: ThemeMode;
