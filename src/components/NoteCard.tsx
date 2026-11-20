@@ -403,7 +403,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
               </button>
             </div>
           </div>
-        </div>
+      </div>
     </div>
   );
 };
