@@ -1,9 +1,13 @@
-const CACHE_NAME = 'minimal-note-v1';
+const CACHE_NAME = 'minimal-note-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
   '/icon.svg',
+  '/favicon.svg',
+  '/favicon-32x32.png',
+  '/icon-192.png',
+  '/apple-touch-icon.png',
 ];
 
 // Install Event - Pre-cache core shell

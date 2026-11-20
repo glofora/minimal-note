@@ -168,12 +168,14 @@ export interface NoteItem {
 export type SnoozeDuration = 10 | 30 | 60; // minutes
 
 export type ThemeMode = 'light' | 'dark' | 'system';
+export type SupportedLanguage = 'en' | 'es' | 'fr' | 'de' | 'hi' | 'ja' | 'zh';
 
 export interface UserPreferences {
   theme: ThemeMode;
   is24HourFormat: boolean;
   defaultColor: NoteColor;
   enableSound: boolean;
+  language?: SupportedLanguage;
 }
 
 export interface BackupExportFile {

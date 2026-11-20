@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { createWorker } from 'tesseract.js';
 import { addHours, format, isBefore, setHours, setMinutes } from 'date-fns';
+import { getTranslation } from '@/lib/i18n';
 import { ChecklistEditor } from './ChecklistEditor';
 import { LinkBadgeList } from './LinkBadgeList';
 
@@ -51,6 +52,7 @@ export const NoteEditorModal: React.FC = () => {
   const [isOcrProcessing, setIsOcrProcessing] = useState(false);
   const [copied, setCopied] = useState(false);
   const [activeOcrImageIndex, setActiveOcrImageIndex] = useState<number | null>(null);
+  const t = getTranslation(preferences.language);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -346,7 +348,7 @@ export const NoteEditorModal: React.FC = () => {
               onClick={handleSaveAndClose}
               className="ml-1 px-3.5 py-1.5 rounded-xl bg-primary text-primary-foreground font-semibold text-xs shadow-xs hover:opacity-90 active:scale-95 transition-all"
             >
-              Done
+              {t.close}
             </button>
           </div>
         </div>
@@ -357,7 +359,7 @@ export const NoteEditorModal: React.FC = () => {
           <div>
             <input
               type="text"
-              placeholder="Title"
+              placeholder={t.titlePlaceholder}
               value={title}
               onChange={handleTitleChange}
               autoFocus
@@ -448,7 +450,7 @@ export const NoteEditorModal: React.FC = () => {
             <div>
               <textarea
                 ref={textareaRef}
-                placeholder="Take a note, capture thoughts, paste text..."
+                placeholder={t.notePlaceholder}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="w-full min-h-[140px] text-sm sm:text-base leading-relaxed bg-transparent border-none resize-none focus:outline-none placeholder:text-muted-foreground/50 text-foreground"

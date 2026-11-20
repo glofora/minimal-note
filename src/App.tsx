@@ -7,6 +7,8 @@ import { ReminderModal } from '@/components/ReminderModal';
 import { BackupRestoreModal } from '@/components/BackupRestoreModal';
 import { SettingsModal } from '@/components/SettingsModal';
 import { AboutModal } from '@/components/AboutModal';
+import { LanguageModal } from '@/components/LanguageModal';
+import { PwaInstallBanner } from '@/components/PwaInstallBanner';
 import { UndoToast } from '@/components/UndoToast';
 
 export const App: React.FC = () => {
@@ -15,6 +17,7 @@ export const App: React.FC = () => {
   const [isBackupOpen, setIsBackupOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
 
   useEffect(() => {
     // Initialize storage and theme
@@ -46,6 +49,7 @@ export const App: React.FC = () => {
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenBackup={() => setIsBackupOpen(true)}
         onOpenAbout={() => setIsAboutOpen(true)}
+        onOpenLanguage={() => setIsLanguageOpen(true)}
       />
 
       <NotesList />
@@ -60,11 +64,19 @@ export const App: React.FC = () => {
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
+        onOpenLanguage={() => setIsLanguageOpen(true)}
       />
       <AboutModal
         isOpen={isAboutOpen}
         onClose={() => setIsAboutOpen(false)}
       />
+      <LanguageModal
+        isOpen={isLanguageOpen}
+        onClose={() => setIsLanguageOpen(false)}
+      />
+
+      {/* PWA Launch Installation Banner (Mobile & Desktop) */}
+      <PwaInstallBanner />
 
       {/* Floating Undo Snackbar */}
       <UndoToast />

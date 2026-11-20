@@ -14,6 +14,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { useNotesStore } from '@/store/useNotesStore';
+import { getTranslation } from '@/lib/i18n';
 import { NoteCard } from './NoteCard';
 import { Plus, StickyNote, Sparkles, CheckSquare } from 'lucide-react';
 import type { NoteItem } from '@/types/note';
@@ -30,6 +31,7 @@ export const NotesList: React.FC = () => {
     reorderNotes,
   } = useNotesStore();
 
+  const t = getTranslation(preferences.language);
   const [isFabOpen, setIsFabOpen] = useState(false);
 
   const sensors = useSensors(
@@ -78,7 +80,7 @@ export const NotesList: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-3">
         <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-        <span className="text-sm text-muted-foreground font-medium">Loading your notes...</span>
+        <span className="text-sm text-muted-foreground font-medium">{t.loadingNotes}</span>
       </div>
     );
   }
@@ -98,12 +100,12 @@ export const NotesList: React.FC = () => {
           </div>
 
           <h2 className="text-xl font-bold tracking-tight text-foreground">
-            {searchQuery || filterColor !== 'all' ? 'No matching notes found' : 'Your workspace is empty'}
+            {searchQuery || filterColor !== 'all' ? t.noMatchingTitle : t.emptyWorkspaceTitle}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground max-w-sm">
             {searchQuery || filterColor !== 'all'
-              ? 'Try adjusting your search terms or clearing the color filter.'
-              : 'Capture ideas, create checklists, attach multiple photos, extract OCR text, and schedule reminders.'}
+              ? t.noMatchingDesc
+              : t.emptyWorkspaceDesc}
           </p>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
@@ -112,7 +114,7 @@ export const NotesList: React.FC = () => {
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium text-sm shadow-md shadow-primary/25 hover:opacity-95 transition-opacity"
             >
               <Plus className="w-4 h-4" />
-              <span>New Note</span>
+              <span>{t.newNote}</span>
             </button>
 
             <button
@@ -120,7 +122,7 @@ export const NotesList: React.FC = () => {
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-muted hover:bg-muted/80 text-foreground font-medium text-sm border border-border transition-colors"
             >
               <CheckSquare className="w-4 h-4 text-primary" />
-              <span>New Checklist</span>
+              <span>{t.newList}</span>
             </button>
           </div>
         </div>
@@ -162,7 +164,7 @@ export const NotesList: React.FC = () => {
               className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-card text-foreground border border-border shadow-lg hover:bg-muted transition-all text-xs font-semibold"
             >
               <CheckSquare className="w-4 h-4 text-primary" />
-              <span>Checklist</span>
+              <span>{t.checklist}</span>
             </button>
 
             {/* New Text Note Button */}
@@ -174,7 +176,7 @@ export const NotesList: React.FC = () => {
               className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-card text-foreground border border-border shadow-lg hover:bg-muted transition-all text-xs font-semibold"
             >
               <StickyNote className="w-4 h-4 text-primary" />
-              <span>Text Note</span>
+              <span>{t.textNote}</span>
             </button>
           </div>
         )}

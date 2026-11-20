@@ -21,6 +21,7 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   is24HourFormat: false,
   defaultColor: 'indigo',
   enableSound: true,
+  language: 'en',
 };
 
 /**
