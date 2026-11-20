@@ -4,7 +4,7 @@
 
   # Minimal Note
 
-  **Distraction-free, offline-first personal notes & checklist PWA with in-browser OCR, smart reminders, and 16 global languages.**
+  **Distraction-free, 100% offline personal notes & checklist PWA with zero cloud storage, in-browser OCR, rich text editing, smart reminders, and 16 global languages.**
 
   <p align="center">
     <a href="https://note.yink.in/"><strong>🚀 Open Live Web App</strong></a> •
@@ -14,21 +14,32 @@
 
   <p align="center">
     <a href="https://note.yink.in/"><img src="https://img.shields.io/badge/Live%20App-note.yink.in-4F46E5?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Demo" /></a>
-    <a href="https://note.yink.in/"><img src="https://img.shields.io/badge/PWA-Offline%20Ready-10B981?style=for-the-badge&logo=pwa&logoColor=white" alt="PWA Ready" /></a>
+    <a href="https://note.yink.in/"><img src="https://img.shields.io/badge/Privacy-100%25%20Offline%20%7C%20No%20Cloud-10B981?style=for-the-badge&logo=shield&logoColor=white" alt="100% Offline No Cloud" /></a>
+    <a href="https://note.yink.in/"><img src="https://img.shields.io/badge/PWA-Installable-6366F1?style=for-the-badge&logo=pwa&logoColor=white" alt="PWA Ready" /></a>
     <a href="https://github.com/glofora/minimal-note"><img src="https://img.shields.io/badge/i18n-16%20Languages-F59E0B?style=for-the-badge&logo=googletranslate&logoColor=white" alt="16 Languages" /></a>
     <a href="https://note.yink.in/"><img src="https://img.shields.io/badge/Platforms-iOS%20%7C%20Android%20%7C%20macOS%20%7C%20Windows%20%7C%20Linux-0284C7?style=for-the-badge" alt="All Platforms Supported" /></a>
-    <a href="https://github.com/glofora/minimal-note/stargazers"><img src="https://img.shields.io/github/stars/glofora/minimal-note?style=for-the-badge&logo=github&color=EAB308" alt="GitHub Stars" /></a>
-    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-6366F1?style=for-the-badge" alt="License MIT" /></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-gray?style=for-the-badge" alt="License MIT" /></a>
   </p>
 
 </div>
 
 ---
 
+> [!IMPORTANT]
+> ### 🔒 100% Offline & Private: Your Data Never Leaves Your Device
+> **Minimal Note does NOT save your data to the cloud.**
+> - **Zero Cloud Servers:** There is no backend database, no remote server sync, and no third-party cloud storage.
+> - **Zero Tracking or Telemetry:** No user analytics, no trackers, and no account registration or login required.
+> - **Local On-Device Storage:** 100% of your notes, checklists, attached images, and preferences are stored exclusively on your device inside your browser's private **IndexedDB** database (powered by `Dexie.js`).
+> - **Client-Side In-Browser OCR:** Optical character recognition runs strictly inside your browser via WebAssembly (`tesseract.js`) — images are never uploaded to any remote API.
+> - **Full Data Ownership:** Export your entire notebook anytime to a standard JSON backup file or restore it with one click.
+
+---
+
 > [!TIP]
 > ### 📲 Instant App on Any Device — No App Store Needed!
 > **Minimal Note runs natively across iOS, Android, macOS, Windows, and Linux.**
-> Just open **[note.yink.in](https://note.yink.in/)** in your device's default browser and install the Progressive Web App (PWA) in seconds:
+> Just open **[note.yink.in](https://note.yink.in/)** in your device's browser and install the Progressive Web App (PWA) in seconds:
 >
 > | Platform | Browser | Fast 1-Step Installation |
 > | :--- | :--- | :--- |
@@ -37,7 +48,7 @@
 > | 💻 **macOS & Windows** | Chrome / Edge / Brave / Opera | Click the **Install App (⊕)** icon in the address bar or app banner |
 > | 🐧 **Linux** | Chrome / Chromium / Edge | Click **"Install App"** in the top bar or browser menu |
 >
-> *Once installed, Minimal Note launches with a zero-latency animated splash screen, full-screen standalone window without address bar, and works **100% offline** with private on-device storage.*
+> *Once installed, Minimal Note launches with a zero-latency splash screen, a full-screen standalone window without address bar, and works **100% offline** without an internet connection.*
 
 ---
 
@@ -60,47 +71,58 @@
 
 ## ✨ Key Features
 
-- **📝 Interactive Checklists & Structured Lists**
-  - Instant checkbox toggle with smooth strike-through animation.
+- **🔒 100% Offline & Zero Cloud Storage**
+  - Complete privacy: no accounts, no logins, no cloud storage, and no network calls for your notes.
+  - High-performance local IndexedDB storage (`Dexie.js`) persists across app restarts and browser sessions.
+  - One-click encrypted JSON import and export for full local backup portability.
+
+- **✍️ Rich Text Formatting (WYSIWYG)**
+  - Seamless rich text editor with essential formatting tools: **Bold**, *Italics*, <u>Underline</u>, ~~Strikethrough~~, Bulleted Lists, Numbered Lists, Links, and Clear Formatting.
+  - Keyboard shortcuts (`Ctrl/Cmd + B`, `Ctrl/Cmd + I`, `Ctrl/Cmd + U`, `Ctrl/Cmd + K`).
+  - Distraction-free, borderless focus without flashing browser rings or unwanted outlines.
+  - Sanitized formatted HTML rendering in note card previews and modal views without raw tags.
+
+- **📝 Interactive Checklists with Natural Text Wrapping**
+  - Instant checkbox toggle directly from both Tile and List views.
+  - Multi-line text wrapping so long checklist tasks are 100% readable at a glance without horizontal truncation.
   - Automatic grouping of finished tasks into a collapsible completed section.
   - Fluid keyboard workflow: press `Enter` to create the next item, `Backspace` on an empty item to delete.
-  - Seamlessly toggle any note between freeform markdown text and interactive checklist mode.
 
-- **📷 Multiple Image Attachments & Canvas Scaling**
+- **🎨 Dynamic Color Backgrounds & Tag Filtering**
+  - 9 refined color tags plus a clean "No Tag" default option.
+  - Cards dynamically adopt light and dark tinted backgrounds corresponding to their color tag.
+  - Compact filter modal and bottom sheet with live note count badges per color.
+
+- **📱 Decluttered Header & Side Navigation Drawer**
+  - Unified slide-out navigation drawer on both desktop and mobile views.
+  - Header stays clean and focused with Search Bar, Filter trigger, and Primary Actions.
+  - Secondary utilities (Language selector, Theme toggle, Backup/Restore, App Info) neatly tucked into the side drawer.
+
+- **📐 Unified Tile & List Views**
+  - **Tile View:** Responsive multi-column masonry grid layout.
+  - **List View:** Single-column full-width vertical stack rendering identical full-featured cards (with drag handle, checklists, image previews, timestamps, and quick action menus).
+
+- **📷 Multiple Image Attachments & Canvas Compression**
   - Attach multiple photos from file upload or camera capture.
-  - Client-side canvas compression downscaling (max 640px) to conserve browser memory and IndexedDB storage.
-  - Grid preview with individual image deletion and OCR extraction.
+  - Client-side canvas compression downscaling (max 640px) to conserve browser memory and device storage.
+  - Built-in image preview strip, individual deletion, and lightbox modal view.
 
-- **🔍 In-Browser OCR (Optical Character Recognition)**
-  - Client-side text extraction using WebAssembly (`tesseract.js`).
+- **🔍 Client-Side In-Browser OCR (Optical Character Recognition)**
+  - Local text extraction powered by WebAssembly (`tesseract.js`).
   - Extract text directly from receipts, book pages, and whiteboard pictures into your note without sending data to third-party servers.
-
-- **🌐 16 Global Languages (i18n)**
-  - Comprehensive internationalization system: **English, Español, Français, Deutsch, Italiano, Português, Русский, Türkçe, العربية, हिन्दी, বাংলা, தமிழ், Bahasa Indonesia, 日本語, 한국어, and 简体中文**.
-  - Searchable language modal accessible from the web header and mobile side drawer.
-  - Real-time reactive updates of all UI keywords, placeholders, and buttons.
 
 - **⏰ Smart Scheduled Reminders**
   - Set custom date & time alerts with 12-hour or 24-hour clock formats.
   - Quick presets: *In 1 hour*, *In 3 hours*, or *Tomorrow morning*.
   - Built-in snooze controls (10, 30, and 60 minutes) when reminders trigger.
 
-- **⚡ Progressive Web App (PWA) & Instant Splash**
-  - Zero-latency animated splash screen prevents blank screens during initial hydration.
-  - Works **100% offline** via Service Worker caching (`public/sw.js`).
-  - Automatic prompt to install on launch for mobile home screens and desktop apps.
-  - Step-by-step guidance for iOS Safari "Add to Home Screen".
+- **🔔 Bottom-Center Non-Clipping Undo Toast**
+  - Centered floating toast notification for note deletions with instant **Undo**.
+  - Positioned cleanly above the Floating Action Button (FAB) on mobile, eliminating off-screen clipping.
 
-- **🎨 Gestures & Color Organization**
-  - Drag-and-drop manual reordering of notes using `@dnd-kit`.
-  - Swipe-to-delete gesture with an instant Undo snackbar.
-  - 9 refined color tags with coordinated dark and light theme styles.
-  - Dark mode, light mode, and system preference detection.
-
-- **🔒 Local Storage Privacy & Data Portability**
-  - All notes, images, and preferences reside locally on your device via `Dexie.js` (IndexedDB).
-  - No trackers, telemetry, or mandatory cloud logins.
-  - One-click backup export and restore via structured JSON files.
+- **🌐 16 Global Languages (i18n)**
+  - Fully translated in: **English, Español, Français, Deutsch, Italiano, Português, Русский, Türkçe, العربية, हिन्दी, বাংলা, தமிழ், Bahasa Indonesia, 日本語, 한국어, and 简体中文**.
+  - Searchable language modal accessible from the web header and side drawer.
 
 ---
 
@@ -111,9 +133,10 @@
 | **Framework & Language** | [React 19](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), [Vite 6](https://vitejs.dev/) |
 | **Styling & Layout** | [Tailwind CSS](https://tailwindcss.com/), Mobile-first Responsive Design |
 | **State Management** | [Zustand](https://zustand-demo.pmnd.rs/) |
-| **Local Database** | [Dexie.js](https://dexie.org/) (IndexedDB wrapper) |
+| **Local Database** | [Dexie.js](https://dexie.org/) (IndexedDB wrapper — 100% on-device) |
+| **Rich Text & Sanitization** | `contentEditable` WYSIWYG, custom HTML sanitizer |
 | **Motion & Drag-and-Drop** | [Framer Motion](https://www.framer.com/motion/), [@dnd-kit](https://dndkit.com/) |
-| **In-Browser OCR** | [Tesseract.js](https://tesseract.projectnaptha.com/) (WebAssembly) |
+| **In-Browser OCR** | [Tesseract.js](https://tesseract.projectnaptha.com/) (WebAssembly — client-side) |
 | **Icons & Utilities** | [Lucide React](https://lucide.dev/), [date-fns](https://date-fns.org/) |
 | **PWA & Offline** | Web App Manifest, Service Worker (Cache-first + Stale-while-revalidate) |
 
@@ -173,15 +196,21 @@ minimal-note/
 │   └── sw.js                 # Service Worker (offline caching & reminders)
 ├── src/
 │   ├── components/           # Modular UI components
-│   │   ├── Navbar.tsx        # Top navigation with live GitHub stars & language picker
-│   │   ├── SideNav.tsx       # Slide-over mobile drawer
-│   │   ├── NotesList.tsx     # Reorderable grid & floating action speed dial
-│   │   ├── NoteCard.tsx      # Card renderer with swipe-to-delete gesture
-│   │   ├── NoteEditorModal.tsx # Note creation, image downscaling & OCR trigger
+│   │   ├── Navbar.tsx        # Top navigation with search, filter trigger & menu
+│   │   ├── SideNav.tsx       # Unified slide-out drawer (mobile & desktop)
+│   │   ├── NotesList.tsx     # Reorderable grid & list layout switcher
+│   │   ├── NoteCard.tsx      # Note card with dynamic color background & swipe gesture
+│   │   ├── NoteEditorModal.tsx # Full note creation & editing modal
+│   │   ├── RichTextEditor.tsx # Clean WYSIWYG editor with borderless focus
+│   │   ├── ChecklistEditor.tsx # Interactive checklist editor with keyboard workflow
+│   │   ├── NoteColorModal.tsx # Dedicated color swatch & tag selector
+│   │   ├── NoteReminderModal.tsx # Quick reminder presets & custom picker
+│   │   ├── FilterModal.tsx   # Color tag filter modal with live note counts
+│   │   ├── UndoToast.tsx     # Centered bottom notification with instant Undo
+│   │   ├── ImageLightboxModal.tsx # Fullscreen image viewer
 │   │   ├── LanguageModal.tsx # Searchable 16-language selector
-│   │   ├── PwaInstallBanner.tsx # Native install banner for mobile & desktop
-│   │   ├── ReminderModal.tsx # Custom date/time & snooze alerts
-│   │   ├── BackupRestoreModal.tsx # JSON data import/export
+│   │   ├── PwaInstallBanner.tsx # Native install prompt banner
+│   │   ├── BackupRestoreModal.tsx # JSON data import/export (local backup)
 │   │   ├── SettingsModal.tsx # Preferences (clock format, theme, language)
 │   │   └── AboutModal.tsx    # App information, specs & GitHub star action
 │   ├── hooks/
@@ -189,7 +218,8 @@ minimal-note/
 │   ├── lib/
 │   │   ├── i18n.ts           # 16-language translation dictionaries & helpers
 │   │   ├── pwa.ts            # PWA install prompt state & standalone detection
-│   │   ├── storage.ts        # Dexie IndexedDB schemas & operations
+│   │   ├── sanitize.ts       # HTML & rich text sanitization for security
+│   │   ├── storage.ts        # Dexie IndexedDB schemas & local storage operations
 │   │   └── utils.ts          # Image downscaling, UUID & URL extraction
 │   ├── store/
 │   │   └── useNotesStore.ts  # Zustand global application state
