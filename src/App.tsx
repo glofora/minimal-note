@@ -18,7 +18,14 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     // Initialize storage and theme
-    initialize();
+    initialize().finally(() => {
+      // Dismiss the splash screen smoothly once the app is loaded
+      const splash = document.getElementById('app-splash');
+      if (splash) {
+        splash.classList.add('splash-hidden');
+        setTimeout(() => splash.remove(), 450);
+      }
+    });
 
     // Ask notification permission on start (non-blocking)
     if (typeof Notification !== 'undefined' && Notification.permission === 'default') {

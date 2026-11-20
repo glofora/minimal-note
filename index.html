@@ -2,19 +2,167 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
-    <link rel="apple-touch-icon" href="/icon.svg" />
-    <link rel="manifest" href="/manifest.json" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    
+    <title>Minimal Note</title>
     <meta name="description" content="Minimal Note - Clean, distraction-free notes and checklists with OCR and reminders" />
     <meta name="theme-color" content="#4f46e5" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Minimal Note" />
-    <title>Minimal Note</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="alternate icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Splash Screen Styles (Instant 0ms render before JS mounts) -->
+    <style>
+      #app-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #090d16;
+        background-image: radial-gradient(circle at 50% 40%, rgba(99, 102, 241, 0.18) 0%, rgba(9, 13, 22, 1) 70%);
+        color: #ffffff;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      #app-splash.splash-hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .splash-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        animation: splashFadeIn 0.5s ease-out forwards;
+      }
+
+      .splash-logo-wrap {
+        position: relative;
+        width: 88px;
+        height: 88px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .splash-glow {
+        position: absolute;
+        inset: -8px;
+        border-radius: 28px;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.6) 0%, rgba(99, 102, 241, 0) 70%);
+        filter: blur(12px);
+        animation: splashPulse 2s infinite ease-in-out;
+      }
+
+      .splash-logo {
+        position: relative;
+        width: 84px;
+        height: 84px;
+        border-radius: 22px;
+        box-shadow: 0 12px 30px -8px rgba(79, 70, 229, 0.5);
+      }
+
+      .splash-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        margin-bottom: 6px;
+        color: #f8fafc;
+      }
+
+      .splash-subtitle {
+        font-size: 0.875rem;
+        color: #94a3b8;
+        letter-spacing: 0.01em;
+        margin-bottom: 28px;
+      }
+
+      .splash-loader-bar {
+        width: 140px;
+        height: 4px;
+        border-radius: 9999px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .splash-loader-progress {
+        width: 45%;
+        height: 100%;
+        border-radius: 9999px;
+        background: linear-gradient(90deg, #6366f1, #a855f7);
+        animation: splashShimmer 1.4s infinite ease-in-out;
+      }
+
+      @keyframes splashFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @keyframes splashPulse {
+        0%, 100% {
+          transform: scale(0.95);
+          opacity: 0.5;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 0.85;
+        }
+      }
+
+      @keyframes splashShimmer {
+        0% {
+          transform: translateX(-100%);
+        }
+        50% {
+          transform: translateX(110%);
+        }
+        100% {
+          transform: translateX(250%);
+        }
+      }
+    </style>
   </head>
   <body class="bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary">
+    <!-- Immediate Splash Screen -->
+    <div id="app-splash" aria-hidden="true">
+      <div class="splash-card">
+        <div class="splash-logo-wrap">
+          <div class="splash-glow"></div>
+          <img class="splash-logo" src="/icon.svg" alt="Minimal Note Icon" width="84" height="84" />
+        </div>
+        <div class="splash-title">Minimal Note</div>
+        <div class="splash-subtitle">Offline notes &amp; checklists</div>
+        <div class="splash-loader-bar">
+          <div class="splash-loader-progress"></div>
+        </div>
+      </div>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
