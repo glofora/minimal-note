@@ -149,11 +149,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                 )}
               </button>
 
-              {/* View Mode Toggle Button: Tile vs List */}
+              {/* View Mode Toggle Button: Tile vs List (Visible on tablet/desktop) */}
               <button
                 type="button"
                 onClick={toggleViewMode}
-                className="h-8 px-2.5 rounded-lg bg-muted/60 hover:bg-muted text-foreground flex items-center gap-1.5 text-xs font-semibold border border-border/50 transition-all cursor-pointer shadow-2xs active:scale-95"
+                className="hidden md:flex h-8 px-2.5 rounded-lg bg-muted/60 hover:bg-muted text-foreground items-center gap-1.5 text-xs font-semibold border border-border/50 transition-all cursor-pointer shadow-2xs active:scale-95"
                 title={preferences.viewMode === 'tile' ? 'Switch to List view' : 'Switch to Tile view'}
                 aria-label={preferences.viewMode === 'tile' ? 'Switch to List view' : 'Switch to Tile view'}
               >
@@ -243,18 +243,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
             </div>
 
-            {/* Mobile Row 2: Search Input + Filter Button + View Toggle */}
-            <div className="flex items-center gap-1.5">
+            {/* Mobile Row 2: Search Input + Filter Button (Matching Web Design, No View Toggle) */}
+            <div className="flex items-center gap-2">
               <div className="relative flex-1 min-w-0">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
-                  <Search className="w-3.5 h-3.5" />
+                  <Search className="w-4 h-4" />
                 </div>
                 <input
                   type="text"
                   placeholder={t.searchPlaceholder}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full h-8.5 pl-8.5 pr-7 bg-muted/60 hover:bg-muted/80 focus:bg-background border border-transparent focus:border-border rounded-xl text-xs placeholder:text-muted-foreground/70 focus:outline-none focus:ring-1 focus:ring-primary/30 transition-all"
+                  className="w-full h-9 pl-9 pr-8 bg-muted/60 hover:bg-muted/80 focus:bg-background border border-transparent focus:border-border rounded-xl text-xs placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all shadow-2xs"
                 />
                 {searchQuery && (
                   <button
@@ -267,34 +267,22 @@ export const Navbar: React.FC<NavbarProps> = ({
                 )}
               </div>
 
-              {/* Mobile Color Filter Button */}
+              {/* Mobile Color Filter Button (Pill-shaped matching web style) */}
               <button
                 type="button"
                 onClick={() => setIsFilterModalOpen(true)}
-                className={`h-8.5 px-2.5 rounded-xl flex items-center gap-1.5 text-xs font-semibold border shrink-0 transition-all cursor-pointer ${
+                className={`relative h-9 px-3 rounded-xl flex items-center gap-1.5 text-xs font-semibold border shrink-0 transition-all cursor-pointer shadow-2xs ${
                   filterColor !== 'all'
                     ? 'bg-primary/10 text-primary border-primary/40 font-bold'
-                    : 'bg-muted/60 text-muted-foreground border-border/50'
+                    : 'bg-muted/60 hover:bg-muted text-foreground border-border/50'
                 }`}
                 title="Filter by Color Tag"
+                aria-label="Filter by Color Tag"
               >
                 <Filter className="w-3.5 h-3.5" />
+                <span>Filter</span>
                 {filterColor !== 'all' && (
                   <span className={`w-2 h-2 rounded-full ${activeColorConfig?.dotClass || 'bg-primary'}`} />
-                )}
-              </button>
-
-              {/* Mobile View Toggle Button */}
-              <button
-                type="button"
-                onClick={toggleViewMode}
-                className="h-8.5 px-2.5 rounded-xl bg-muted/60 text-muted-foreground flex items-center justify-center shrink-0 border border-border/50 transition-all cursor-pointer"
-                title={preferences.viewMode === 'tile' ? 'Switch to List view' : 'Switch to Tile view'}
-              >
-                {preferences.viewMode === 'tile' ? (
-                  <List className="w-4 h-4 text-primary" />
-                ) : (
-                  <LayoutGrid className="w-4 h-4 text-primary" />
                 )}
               </button>
             </div>

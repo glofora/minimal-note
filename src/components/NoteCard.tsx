@@ -157,10 +157,9 @@ export const NoteCard: React.FC<NoteCardProps> = ({
           : 'z-0'
       }`}
     >
-        /* Tile View Layout: Responsive Masonry Card with Compact Horizontal Image Strip */
         <div
           onClick={() => onEdit(note)}
-          className={`group relative flex flex-col gap-2 p-3 sm:p-3.5 bg-card hover:bg-card/90 dark:bg-card border ${colorConfig.borderLight} ${colorConfig.borderDark} rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-sm transition-all cursor-pointer`}
+          className={`group relative flex flex-col gap-2 p-3 sm:p-3.5 bg-card hover:bg-card/90 dark:bg-card border ${colorConfig.borderLight} ${colorConfig.borderDark} rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-sm transition-all cursor-pointer w-full`}
         >
           {/* Top Bar: Handle + Color + Title + Actions */}
           <div className="flex items-center justify-between gap-2">
