@@ -143,8 +143,8 @@ export const NotesList: React.FC = () => {
           const isTileView = preferences.viewMode === 'tile';
           const sortingStrategy = isTileView ? rectSortingStrategy : verticalListSortingStrategy;
           const containerClass = isTileView
-            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 items-start'
-            : 'space-y-1.5 sm:space-y-2';
+            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 items-start'
+            : 'flex flex-col gap-3 sm:gap-4 w-full';
 
           return (
             <DndContext

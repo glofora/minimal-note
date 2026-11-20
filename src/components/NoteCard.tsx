@@ -144,13 +144,12 @@ export const NoteCard: React.FC<NoteCardProps> = ({
   const totalChecklist = checklistItems.length;
 
   const timestampStr = formatNoteTimestamp(note.updatedAt || note.createdAt, is24Hour);
-  const isListView = (preferences.viewMode || 'list') === 'list';
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`relative rounded-xl sm:rounded-2xl select-none transition-shadow ${
+      className={`relative w-full rounded-xl sm:rounded-2xl select-none transition-shadow ${
         isDragging
           ? 'z-50 opacity-90 shadow-2xl scale-[1.01] ring-2 ring-primary/40'
           : isMenuOpen
@@ -158,213 +157,6 @@ export const NoteCard: React.FC<NoteCardProps> = ({
           : 'z-0'
       }`}
     >
-      {/* List View Layout: Clean, full-width horizontal row */}
-      {isListView ? (
-        <div
-          onClick={() => onEdit(note)}
-          className={`group relative flex items-center gap-2.5 px-3 py-2 sm:px-3.5 sm:py-2.5 bg-card hover:bg-card/90 dark:bg-card border ${colorConfig.borderLight} ${colorConfig.borderDark} rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-sm transition-all cursor-pointer`}
-        >
-          {/* Subtle Vertical Drag Handle (⋮⋮) */}
-          <div
-            {...attributes}
-            {...listeners}
-            onClick={(e) => e.stopPropagation()}
-            className="self-stretch w-5 sm:w-6 -my-2 -ml-3 sm:-my-2.5 sm:-ml-3.5 pl-2 sm:pl-2.5 pr-1 flex items-center justify-center text-muted-foreground/30 hover:text-foreground active:text-primary hover:bg-muted/50 rounded-l-xl sm:rounded-l-2xl cursor-grab active:cursor-grabbing touch-none select-none transition-colors group/handle shrink-0"
-            title="Drag to reorder"
-            aria-label="Drag to reorder note"
-          >
-            <GripVertical className="w-4 h-4 group-hover/handle:scale-110 transition-transform" />
-          </div>
-
-          {/* Compact Vertical Color Bar */}
-          <span
-            className={`w-1 self-stretch my-0.5 rounded-full ${colorConfig.dotClass} shrink-0 opacity-80`}
-            title={colorConfig.label}
-          />
-
-          {/* Content Body: Horizontal Row */}
-          <div className="flex-1 min-w-0 space-y-0.5">
-            {/* Title Row */}
-            <div className="flex items-center gap-1.5 min-w-0">
-              {note.isPinned && (
-                <span title="Pinned note" className="inline-flex items-center justify-center text-primary shrink-0">
-                  <Pin className="w-3.5 h-3.5 fill-primary text-primary -rotate-12" />
-                </span>
-              )}
-              <h3 className="font-semibold text-sm sm:text-base text-foreground leading-tight truncate">
-                {note.title || 'Untitled Note'}
-              </h3>
-              {note.noteType === 'checklist' && totalChecklist > 0 && (
-                <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded-md text-[10px] font-medium bg-muted text-muted-foreground shrink-0">
-                  <CheckSquare className="w-2.5 h-2.5 text-primary" />
-                  <span>{completedCount}/{totalChecklist}</span>
-                </span>
-              )}
-            </div>
-
-            {/* Single-line Content Snippet */}
-            <p className="text-xs text-muted-foreground/80 truncate leading-normal">
-              {note.noteType === 'checklist' && checklistItems.length > 0
-                ? checklistItems.map((i) => `${i.isCompleted ? '✓' : '○'} ${i.text}`).join(' · ')
-                : cleanFormattedSnippet(note.description) || 'No additional text'}
-            </p>
-
-            {/* Bottom metadata */}
-            <div className="flex items-center gap-2 pt-0.5 text-[11px] text-muted-foreground/75 font-medium flex-wrap">
-              {timestampStr && <span>{timestampStr}</span>}
-              {note.hasReminder && note.reminderAt && (
-                <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded-full text-[10px] font-semibold bg-primary/10 text-primary border border-primary/20">
-                  <Bell className="w-2.5 h-2.5" />
-                  <span>{formatReminderDate(note.reminderAt, is24Hour)}</span>
-                </span>
-              )}
-              <div onClick={(e) => e.stopPropagation()} className="inline-flex items-center gap-0.5 ml-auto sm:ml-1">
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); openNoteReminderModal(note); }}
-                  className={`p-1 rounded-md transition-colors cursor-pointer ${
-                    note.hasReminder && note.reminderAt
-                      ? 'text-primary bg-primary/15'
-                      : 'text-muted-foreground/50 hover:text-primary hover:bg-muted'
-                  }`}
-                  title="Reminder settings"
-                  aria-label="Set reminder"
-                >
-                  <Bell className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); openNoteColorModal(note); }}
-                  className="p-1 rounded-md text-muted-foreground/50 hover:text-primary hover:bg-muted transition-colors cursor-pointer"
-                  title="Color & tag settings"
-                  aria-label="Color settings"
-                >
-                  <Palette className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Small Right Thumbnail if images attached */}
-          {noteImages.length > 0 && (
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                openImageGallery(noteImages, 0);
-              }}
-              className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden border border-border/80 shadow-2xs shrink-0 cursor-pointer hover:opacity-90 active:scale-95 transition-all bg-black/5 dark:bg-black/30"
-              title="Click to view full-screen gallery"
-            >
-              <img
-                src={noteImages[0]}
-                alt="Thumbnail"
-                className="w-full h-full object-cover"
-              />
-              {noteImages.length > 1 && (
-                <span className="absolute bottom-0.5 right-0.5 px-1 py-0.2 rounded-md bg-black/75 text-white text-[9px] font-bold">
-                  +{noteImages.length - 1}
-                </span>
-              )}
-            </div>
-          )}
-
-          {/* Three-Dot Menu (⋮) */}
-          <div
-            ref={menuRef}
-            onClick={(e) => e.stopPropagation()}
-            className="relative flex items-center gap-0.5 shrink-0"
-          >
-            <button
-              type="button"
-              onClick={handlePin}
-              className={`hidden sm:inline-flex p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors opacity-0 group-hover:opacity-100 ${
-                note.isPinned ? 'opacity-100 text-primary' : ''
-              }`}
-              title={note.isPinned ? 'Unpin note' : 'Pin note'}
-              aria-label={note.isPinned ? 'Unpin note' : 'Pin note'}
-            >
-              <Pin className={`w-3.5 h-3.5 ${note.isPinned ? 'fill-primary text-primary' : ''}`} />
-            </button>
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsMenuOpen((prev) => !prev);
-              }}
-              className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted active:bg-muted transition-colors cursor-pointer"
-              title="More options"
-              aria-label="More options"
-              aria-expanded={isMenuOpen}
-            >
-              <MoreVertical className="w-4 h-4" />
-            </button>
-
-            {/* Solid Opaque Floating Dropdown Menu */}
-            {isMenuOpen && (
-              <>
-                <div
-                  className="fixed inset-0 z-[515] bg-transparent"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsMenuOpen(false);
-                  }}
-                />
-                <div
-                  className="absolute right-0 top-full mt-1.5 w-44 py-1.5 bg-[#181824] dark:bg-[#181824] text-white border border-white/10 rounded-2xl shadow-2xl z-[520] animate-in fade-in zoom-in-95 duration-150"
-                  role="menu"
-                >
-                  <button
-                    type="button"
-                    onClick={handlePin}
-                    className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-medium text-white/90 hover:bg-white/10 transition-colors text-left"
-                    role="menuitem"
-                  >
-                    <Pin className={`w-3.5 h-3.5 ${note.isPinned ? 'fill-primary text-primary' : 'text-white/60'}`} />
-                    <span>{note.isPinned ? 'Unpin Note' : 'Pin Note'}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleCopy}
-                    className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-medium text-white/90 hover:bg-white/10 transition-colors text-left"
-                    role="menuitem"
-                  >
-                    {copied ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    ) : (
-                      <Copy className="w-3.5 h-3.5 text-white/60" />
-                    )}
-                    <span>{copied ? 'Copied!' : 'Copy'}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleShare}
-                    className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-medium text-white/90 hover:bg-white/10 transition-colors text-left"
-                    role="menuitem"
-                  >
-                    <Share2 className="w-3.5 h-3.5 text-white/60" />
-                    <span>Share</span>
-                  </button>
-
-                  <div className="my-1 border-t border-white/10" />
-
-                  <button
-                    type="button"
-                    onClick={handleDelete}
-                    className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-medium text-rose-400 hover:bg-rose-500/20 transition-colors text-left"
-                    role="menuitem"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    <span>Delete</span>
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      ) : (
         /* Tile View Layout: Responsive Masonry Card with Compact Horizontal Image Strip */
         <div
           onClick={() => onEdit(note)}
@@ -607,7 +399,6 @@ export const NoteCard: React.FC<NoteCardProps> = ({
             </div>
           </div>
         </div>
-      )}
     </div>
   );
 };
