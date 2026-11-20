@@ -10,6 +10,10 @@ import { AboutModal } from '@/components/AboutModal';
 import { LanguageModal } from '@/components/LanguageModal';
 import { PwaInstallBanner } from '@/components/PwaInstallBanner';
 import { UndoToast } from '@/components/UndoToast';
+import { DeleteConfirmModal } from '@/components/DeleteConfirmModal';
+import { ImageLightboxModal } from '@/components/ImageLightboxModal';
+import { NoteReminderModal } from '@/components/NoteReminderModal';
+import { NoteColorModal } from '@/components/NoteColorModal';
 
 export const App: React.FC = () => {
   const { initialize, checkDueReminders } = useNotesStore();
@@ -80,6 +84,16 @@ export const App: React.FC = () => {
 
       {/* Floating Undo Snackbar */}
       <UndoToast />
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmModal />
+
+      {/* Image Lightbox Modal (Always on top) */}
+      <ImageLightboxModal />
+
+      {/* Note-Specific Reminder & Color Settings Modals */}
+      <NoteReminderModal />
+      <NoteColorModal />
     </div>
   );
 };

@@ -26,6 +26,11 @@ interface NotesState {
   activeEditingNote: NoteItem | null;
   isEditorOpen: boolean;
   undoCache: { note: NoteItem; originalIndex: number } | null;
+  noteToDelete: { id: string; title: string } | null;
+  noteForReminderModal: NoteItem | null;
+  noteForColorModal: NoteItem | null;
+  previewImage: string | null;
+  previewGallery: { images: string[]; activeIndex: number } | null;
   preferences: UserPreferences;
   dueReminderNote: NoteItem | null;
 
@@ -36,15 +41,37 @@ interface NotesState {
   openCreateModal: (defaultColor?: NoteColor, noteType?: NoteType) => void;
   openEditModal: (note: NoteItem) => void;
   closeEditorModal: () => void;
+  openNoteReminderModal: (note: NoteItem) => void;
+  closeNoteReminderModal: () => void;
+  openNoteColorModal: (note: NoteItem) => void;
+  closeNoteColorModal: () => void;
+  updateNoteReminder: (noteId: string, reminderAt: string | null) => Promise<void>;
+  updateNoteColor: (noteId: string, color: NoteColor) => Promise<void>;
+  openImagePreview: (imageUrl: string) => void;
+  closeImagePreview: () => void;
+  openImageGallery: (images: string[], initialIndex?: number) => void;
+  closeImageGallery: () => void;
+  nextGalleryImage: () => void;
+  prevGalleryImage: () => void;
   saveActiveNote: (partial: Partial<NoteItem>) => Promise<NoteItem>;
   deleteNote: (id: string) => Promise<void>;
+  requestDeleteNote: (id: string, title?: string) => void;
+  cancelDeleteNote: () => void;
+  confirmDeleteNote: () => Promise<void>;
+  togglePinNote: (id: string) => Promise<void>;
   undoDeleteNote: () => Promise<void>;
   clearUndoCache: () => void;
   reorderNotes: (activeId: string, overId: string) => Promise<void>;
+  moveNoteToTop: (id: string) => Promise<void>;
+  moveNoteToBottom: (id: string) => Promise<void>;
+  moveNoteUp: (id: string) => Promise<void>;
+  moveNoteDown: (id: string) => Promise<void>;
   toggleChecklistItem: (noteId: string, itemId: string) => Promise<void>;
+  updateChecklistOrder: (noteId: string, items: ChecklistItem[]) => Promise<void>;
   snoozeReminder: (noteId: string, durationMinutes: SnoozeDuration) => Promise<void>;
   dismissReminder: (noteId: string) => Promise<void>;
   updatePreferences: (newPrefs: Partial<UserPreferences>) => Promise<void>;
+  toggleViewMode: () => Promise<void>;
   importBackup: (notes: NoteItem[], overwrite: boolean) => Promise<void>;
   checkDueReminders: () => void;
 }
@@ -57,12 +84,18 @@ export const useNotesStore = create<NotesState>((set, get) => ({
   activeEditingNote: null,
   isEditorOpen: false,
   undoCache: null,
+  noteToDelete: null,
+  noteForReminderModal: null,
+  noteForColorModal: null,
+  previewImage: null,
+  previewGallery: null,
   dueReminderNote: null,
   preferences: {
     theme: 'system',
     is24HourFormat: false,
     defaultColor: 'indigo',
     enableSound: true,
+    viewMode: (typeof localStorage !== 'undefined' && (localStorage.getItem('minimal_note_view_mode') as 'list' | 'tile')) || 'list',
   },
 
   initialize: async () => {
@@ -76,6 +109,7 @@ export const useNotesStore = create<NotesState>((set, get) => ({
       // Normalize loaded notes for backward compatibility
       const normalizedNotes: NoteItem[] = storedNotes.map((n) => ({
         ...n,
+        isPinned: Boolean(n.isPinned),
         noteType: n.noteType || 'text',
         checklist: n.checklist || [],
         images: n.images || (n.imageDataUrl ? [n.imageDataUrl] : []),
@@ -85,9 +119,12 @@ export const useNotesStore = create<NotesState>((set, get) => ({
       // Apply initial theme
       applyTheme(storedPrefs.theme);
 
+      // Check localStorage for preferred viewMode
+      const savedViewMode = (typeof localStorage !== 'undefined' && (localStorage.getItem('minimal_note_view_mode') as 'list' | 'tile')) || storedPrefs.viewMode || 'list';
+
       set({
         notes: normalizedNotes,
-        preferences: storedPrefs,
+        preferences: { ...storedPrefs, viewMode: savedViewMode },
         isLoading: false,
       });
 
@@ -139,6 +176,7 @@ export const useNotesStore = create<NotesState>((set, get) => ({
     set({
       activeEditingNote: {
         ...note,
+        isPinned: Boolean(note.isPinned),
         noteType: note.noteType || 'text',
         checklist: note.checklist || [],
         images: note.images || (note.imageDataUrl ? [note.imageDataUrl] : []),
@@ -150,6 +188,108 @@ export const useNotesStore = create<NotesState>((set, get) => ({
 
   closeEditorModal: () => {
     set({ isEditorOpen: false, activeEditingNote: null });
+  },
+
+  openNoteReminderModal: (note: NoteItem) => {
+    set({ noteForReminderModal: note });
+  },
+
+  closeNoteReminderModal: () => {
+    set({ noteForReminderModal: null });
+  },
+
+  openNoteColorModal: (note: NoteItem) => {
+    set({ noteForColorModal: note });
+  },
+
+  closeNoteColorModal: () => {
+    set({ noteForColorModal: null });
+  },
+
+  updateNoteReminder: async (noteId: string, reminderAt: string | null) => {
+    const { notes, activeEditingNote } = get();
+    const note = notes.find((n) => n.id === noteId) || (activeEditingNote?.id === noteId ? activeEditingNote : null);
+    if (!note) return;
+
+    const hasReminder = Boolean(reminderAt);
+    const updatedNote: NoteItem = {
+      ...note,
+      hasReminder,
+      reminderAt,
+      updatedAt: new Date().toISOString(),
+    };
+
+    const newNotes = notes.map((n) => (n.id === noteId ? updatedNote : n));
+    set({
+      notes: newNotes,
+      noteForReminderModal: null,
+      activeEditingNote: activeEditingNote?.id === noteId ? updatedNote : activeEditingNote,
+    });
+    await persistNote(updatedNote);
+  },
+
+  updateNoteColor: async (noteId: string, color: NoteColor) => {
+    const { notes, activeEditingNote } = get();
+    const note = notes.find((n) => n.id === noteId) || (activeEditingNote?.id === noteId ? activeEditingNote : null);
+    if (!note) return;
+
+    const updatedNote: NoteItem = {
+      ...note,
+      color,
+      updatedAt: new Date().toISOString(),
+    };
+
+    const newNotes = notes.map((n) => (n.id === noteId ? updatedNote : n));
+    set({
+      notes: newNotes,
+      noteForColorModal: null,
+      activeEditingNote: activeEditingNote?.id === noteId ? updatedNote : activeEditingNote,
+    });
+    await persistNote(updatedNote);
+  },
+
+  openImagePreview: (imageUrl: string) => {
+    set({
+      previewImage: imageUrl,
+      previewGallery: { images: [imageUrl], activeIndex: 0 },
+    });
+  },
+
+  closeImagePreview: () => {
+    set({ previewImage: null, previewGallery: null });
+  },
+
+  openImageGallery: (images: string[], initialIndex = 0) => {
+    if (!images || images.length === 0) return;
+    const clampedIndex = Math.max(0, Math.min(initialIndex, images.length - 1));
+    set({
+      previewImage: images[clampedIndex],
+      previewGallery: { images, activeIndex: clampedIndex },
+    });
+  },
+
+  closeImageGallery: () => {
+    set({ previewImage: null, previewGallery: null });
+  },
+
+  nextGalleryImage: () => {
+    const { previewGallery } = get();
+    if (!previewGallery || previewGallery.images.length <= 1) return;
+    const nextIndex = (previewGallery.activeIndex + 1) % previewGallery.images.length;
+    set({
+      previewImage: previewGallery.images[nextIndex],
+      previewGallery: { ...previewGallery, activeIndex: nextIndex },
+    });
+  },
+
+  prevGalleryImage: () => {
+    const { previewGallery } = get();
+    if (!previewGallery || previewGallery.images.length <= 1) return;
+    const prevIndex = (previewGallery.activeIndex - 1 + previewGallery.images.length) % previewGallery.images.length;
+    set({
+      previewImage: previewGallery.images[prevIndex],
+      previewGallery: { ...previewGallery, activeIndex: prevIndex },
+    });
   },
 
   saveActiveNote: async (partial: Partial<NoteItem>) => {
@@ -210,6 +350,28 @@ export const useNotesStore = create<NotesState>((set, get) => ({
     await persistNote(updatedNote);
   },
 
+  updateChecklistOrder: async (noteId: string, items: ChecklistItem[]) => {
+    const { notes, activeEditingNote } = get();
+    const note = notes.find((n) => n.id === noteId);
+    if (!note) return;
+
+    const updatedNote: NoteItem = {
+      ...note,
+      checklist: items,
+      updatedAt: new Date().toISOString(),
+    };
+
+    const newNotes = notes.map((n) => (n.id === noteId ? updatedNote : n));
+    set({
+      notes: newNotes,
+      activeEditingNote:
+        activeEditingNote?.id === noteId
+          ? { ...activeEditingNote, checklist: items }
+          : activeEditingNote,
+    });
+    await persistNote(updatedNote);
+  },
+
   deleteNote: async (id: string) => {
     const { notes } = get();
     const targetIndex = notes.findIndex((n) => n.id === id);
@@ -224,6 +386,53 @@ export const useNotesStore = create<NotesState>((set, get) => ({
     });
 
     await removeNote(id);
+  },
+
+  requestDeleteNote: (id: string, title?: string) => {
+    const { notes } = get();
+    const note = notes.find((n) => n.id === id);
+    const resolvedTitle = title !== undefined ? title : note?.title || '';
+    set({ noteToDelete: { id, title: resolvedTitle } });
+  },
+
+  cancelDeleteNote: () => {
+    set({ noteToDelete: null });
+  },
+
+  confirmDeleteNote: async () => {
+    const { noteToDelete, deleteNote, activeEditingNote, closeEditorModal } = get();
+    if (!noteToDelete) return;
+    const targetId = noteToDelete.id;
+    set({ noteToDelete: null });
+
+    if (activeEditingNote?.id === targetId) {
+      closeEditorModal();
+    }
+
+    await deleteNote(targetId);
+  },
+
+  togglePinNote: async (id: string) => {
+    const { notes, activeEditingNote } = get();
+    const note = notes.find((n) => n.id === id);
+    if (!note) return;
+
+    const isPinned = !note.isPinned;
+    const updatedNote: NoteItem = {
+      ...note,
+      isPinned,
+      updatedAt: new Date().toISOString(),
+    };
+
+    const newNotes = notes.map((n) => (n.id === id ? updatedNote : n));
+    set({
+      notes: newNotes,
+      activeEditingNote:
+        activeEditingNote?.id === id
+          ? { ...activeEditingNote, isPinned }
+          : activeEditingNote,
+    });
+    await persistNote(updatedNote);
   },
 
   undoDeleteNote: async () => {
@@ -255,6 +464,62 @@ export const useNotesStore = create<NotesState>((set, get) => ({
     const reordered = [...notes];
     const [moved] = reordered.splice(oldIndex, 1);
     reordered.splice(newIndex, 0, moved);
+
+    const withOrder = reordered.map((item, idx) => ({ ...item, orderIndex: idx }));
+    set({ notes: withOrder });
+    await bulkPersistNotes(withOrder);
+  },
+
+  moveNoteToTop: async (id: string) => {
+    const { notes } = get();
+    const currentIndex = notes.findIndex((n) => n.id === id);
+    if (currentIndex <= 0) return;
+
+    const reordered = [...notes];
+    const [moved] = reordered.splice(currentIndex, 1);
+    reordered.unshift(moved);
+
+    const withOrder = reordered.map((item, idx) => ({ ...item, orderIndex: idx }));
+    set({ notes: withOrder });
+    await bulkPersistNotes(withOrder);
+  },
+
+  moveNoteToBottom: async (id: string) => {
+    const { notes } = get();
+    const currentIndex = notes.findIndex((n) => n.id === id);
+    if (currentIndex === -1 || currentIndex === notes.length - 1) return;
+
+    const reordered = [...notes];
+    const [moved] = reordered.splice(currentIndex, 1);
+    reordered.push(moved);
+
+    const withOrder = reordered.map((item, idx) => ({ ...item, orderIndex: idx }));
+    set({ notes: withOrder });
+    await bulkPersistNotes(withOrder);
+  },
+
+  moveNoteUp: async (id: string) => {
+    const { notes } = get();
+    const currentIndex = notes.findIndex((n) => n.id === id);
+    if (currentIndex <= 0) return;
+
+    const reordered = [...notes];
+    const [moved] = reordered.splice(currentIndex, 1);
+    reordered.splice(currentIndex - 1, 0, moved);
+
+    const withOrder = reordered.map((item, idx) => ({ ...item, orderIndex: idx }));
+    set({ notes: withOrder });
+    await bulkPersistNotes(withOrder);
+  },
+
+  moveNoteDown: async (id: string) => {
+    const { notes } = get();
+    const currentIndex = notes.findIndex((n) => n.id === id);
+    if (currentIndex === -1 || currentIndex >= notes.length - 1) return;
+
+    const reordered = [...notes];
+    const [moved] = reordered.splice(currentIndex, 1);
+    reordered.splice(currentIndex + 1, 0, moved);
 
     const withOrder = reordered.map((item, idx) => ({ ...item, orderIndex: idx }));
     set({ notes: withOrder });
@@ -306,6 +571,15 @@ export const useNotesStore = create<NotesState>((set, get) => ({
     }
 
     await saveUserPreferences(updated);
+  },
+
+  toggleViewMode: async () => {
+    const current = get().preferences.viewMode || 'list';
+    const next = current === 'list' ? 'tile' : 'list';
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('minimal_note_view_mode', next);
+    }
+    await get().updatePreferences({ viewMode: next });
   },
 
   importBackup: async (importedNotes: NoteItem[], overwrite: boolean) => {

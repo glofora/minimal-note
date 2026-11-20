@@ -22,6 +22,7 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   defaultColor: 'indigo',
   enableSound: true,
   language: 'en',
+  viewMode: 'list',
 };
 
 /**

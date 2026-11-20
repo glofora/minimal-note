@@ -58,7 +58,7 @@ export const SideNav: React.FC<SideNavProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex sm:hidden animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[2500] flex animate-in fade-in duration-200">
       {/* Dimmed Backdrop */}
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"

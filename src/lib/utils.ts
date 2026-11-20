@@ -30,6 +30,26 @@ export function formatReminderDate(dateString: string | null | undefined, is24Ho
 }
 
 /**
+ * Format note card timestamp cleanly and compactly
+ */
+export function formatNoteTimestamp(dateString: string | null | undefined, is24Hour = false): string {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '';
+
+  const timeFormat = is24Hour ? 'HH:mm' : 'h:mm a';
+  const timeStr = format(date, timeFormat);
+
+  if (isToday(date)) {
+    return `Today, ${timeStr}`;
+  }
+  if (isYesterday(date)) {
+    return `Yesterday, ${timeStr}`;
+  }
+  return `${format(date, 'MMM d')} • ${timeStr}`;
+}
+
+/**
  * Generate a random UUID v4 cleanly without external dependency
  */
 export function generateUUID(): string {

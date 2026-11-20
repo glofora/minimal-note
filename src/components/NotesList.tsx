@@ -3,8 +3,7 @@ import {
   DndContext,
   closestCenter,
   KeyboardSensor,
-  MouseSensor,
-  TouchSensor,
+  PointerSensor,
   useSensor,
   useSensors,
   type DragEndEvent,
@@ -13,11 +12,12 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
+  rectSortingStrategy,
 } from '@dnd-kit/sortable';
 import { useNotesStore } from '@/store/useNotesStore';
 import { getTranslation } from '@/lib/i18n';
 import { NoteCard } from './NoteCard';
-import { Plus, StickyNote, Sparkles, CheckSquare } from 'lucide-react';
+import { Plus, StickyNote, Sparkles, CheckSquare, Pin } from 'lucide-react';
 import type { NoteItem } from '@/types/note';
 
 export const NotesList: React.FC = () => {
@@ -36,15 +36,9 @@ export const NotesList: React.FC = () => {
   const [isFabOpen, setIsFabOpen] = useState(false);
 
   const sensors = useSensors(
-    useSensor(MouseSensor, {
+    useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 5,
-      },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 150, // Gentle hold to activate position change on touch
-        tolerance: 8,
+        distance: 4,
       },
     }),
     useSensor(KeyboardSensor, {
@@ -83,6 +77,16 @@ export const NotesList: React.FC = () => {
     });
   }, [notes, filterColor, searchQuery]);
 
+  // Split into Pinned and Others
+  const pinnedNotes = React.useMemo(
+    () => filteredNotes.filter((n) => Boolean(n.isPinned)),
+    [filteredNotes]
+  );
+  const otherNotes = React.useMemo(
+    () => filteredNotes.filter((n) => !n.isPinned),
+    [filteredNotes]
+  );
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-3">
@@ -93,7 +97,7 @@ export const NotesList: React.FC = () => {
   }
 
   return (
-    <main className="max-w-4xl mx-auto px-4 py-6 sm:px-6 relative min-h-[calc(100vh-130px)] pb-28">
+    <main className="max-w-4xl mx-auto px-2.5 py-3 sm:px-6 sm:py-5 relative min-h-[calc(100vh-130px)] pb-28">
       {/* Empty State */}
       {filteredNotes.length === 0 ? (
         <div className="flex flex-col items-center justify-center text-center py-20 px-4">
@@ -135,27 +139,89 @@ export const NotesList: React.FC = () => {
         </div>
       ) : (
         /* Sortable List */
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={filteredNotes.map((n) => n.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <div className="space-y-3">
-              {filteredNotes.map((note: NoteItem) => (
-                <NoteCard
-                  key={note.id}
-                  note={note}
-                  is24Hour={preferences.is24HourFormat}
-                  onEdit={openEditModal}
-                />
-              ))}
-            </div>
-          </SortableContext>
-        </DndContext>
+        (() => {
+          const isTileView = preferences.viewMode === 'tile';
+          const sortingStrategy = isTileView ? rectSortingStrategy : verticalListSortingStrategy;
+          const containerClass = isTileView
+            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 items-start'
+            : 'space-y-1.5 sm:space-y-2';
+
+          return (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              {pinnedNotes.length > 0 ? (
+                <div className="space-y-4">
+                  {/* Pinned Notes Section */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-1.5 px-1 py-0.5 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                      <Pin className="w-3.5 h-3.5 text-primary fill-primary -rotate-12" />
+                      <span>Pinned ({pinnedNotes.length})</span>
+                    </div>
+                    <SortableContext
+                      items={pinnedNotes.map((n) => n.id)}
+                      strategy={sortingStrategy}
+                    >
+                      <div className={containerClass}>
+                        {pinnedNotes.map((note: NoteItem) => (
+                          <NoteCard
+                            key={note.id}
+                            note={note}
+                            is24Hour={preferences.is24HourFormat}
+                            onEdit={openEditModal}
+                          />
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </div>
+
+                  {/* Others Notes Section */}
+                  {otherNotes.length > 0 && (
+                    <div className="space-y-1.5 pt-1">
+                      <div className="flex items-center gap-1.5 px-1 py-0.5 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                        <span>Others ({otherNotes.length})</span>
+                      </div>
+                      <SortableContext
+                        items={otherNotes.map((n) => n.id)}
+                        strategy={sortingStrategy}
+                      >
+                        <div className={containerClass}>
+                          {otherNotes.map((note: NoteItem) => (
+                            <NoteCard
+                              key={note.id}
+                              note={note}
+                              is24Hour={preferences.is24HourFormat}
+                              onEdit={openEditModal}
+                            />
+                          ))}
+                        </div>
+                      </SortableContext>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                /* Single List when no notes are pinned */
+                <SortableContext
+                  items={filteredNotes.map((n) => n.id)}
+                  strategy={sortingStrategy}
+                >
+                  <div className={containerClass}>
+                    {filteredNotes.map((note: NoteItem) => (
+                      <NoteCard
+                        key={note.id}
+                        note={note}
+                        is24Hour={preferences.is24HourFormat}
+                        onEdit={openEditModal}
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
+              )}
+            </DndContext>
+          );
+        })()
       )}
 
       {/* Floating Action Speed Dial (Bottom Right) */}

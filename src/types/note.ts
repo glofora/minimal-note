@@ -170,6 +170,7 @@ import type { SupportedLanguage } from '@/lib/i18n';
 export type SnoozeDuration = 10 | 30 | 60; // minutes
 
 export type ThemeMode = 'light' | 'dark' | 'system';
+export type ViewMode = 'list' | 'tile';
 export type { SupportedLanguage };
 
 export interface UserPreferences {
@@ -178,6 +179,7 @@ export interface UserPreferences {
   defaultColor: NoteColor;
   enableSound: boolean;
   language?: SupportedLanguage;
+  viewMode?: ViewMode;
 }
 
 export interface BackupExportFile {
