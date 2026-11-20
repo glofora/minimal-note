@@ -5,6 +5,7 @@ import type { NoteItem } from '@/types/note';
 import { NOTE_COLORS } from '@/types/note';
 import { formatReminderDate, formatNoteTimestamp, shareNoteWithImages } from '@/lib/utils';
 import { formatDescriptionToHtml, htmlToPlainText, sanitizeHtml } from '@/lib/sanitize';
+import { getTranslation } from '@/lib/i18n';
 import { useNotesStore } from '@/store/useNotesStore';
 import {
   Bell,
@@ -41,6 +42,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
     preferences,
   } = useNotesStore();
 
+  const t = getTranslation(preferences.language);
   const [copied, setCopied] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -236,7 +238,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
                       ) : (
                         <Copy className="w-3.5 h-3.5 text-white/60" />
                       )}
-                      <span>{copied ? 'Copied!' : 'Copy'}</span>
+                      <span>{copied ? t.copied : t.copyText}</span>
                     </button>
 
                     <button
@@ -246,7 +248,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
                       role="menuitem"
                     >
                       <Share2 className="w-3.5 h-3.5 text-white/60" />
-                      <span>Share</span>
+                      <span>{t.share}</span>
                     </button>
 
                     <div className="my-1 border-t border-white/10" />
@@ -258,7 +260,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
                       role="menuitem"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
-                      <span>Delete</span>
+                      <span>{t.deleteNote}</span>
                     </button>
                   </div>
                 </>

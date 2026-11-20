@@ -4,7 +4,7 @@
 
   # Minimal Note
 
-  **Distraction-free, 100% offline personal notes & checklist PWA with zero cloud storage, in-browser OCR, rich text editing, smart reminders, and 16 global languages.**
+  **Distraction-free, 100% offline personal notes & checklist PWA with zero cloud storage, in-browser OCR, rich text editing, smart reminders, and 17 global languages.**
 
   <p align="center">
     <a href="https://note.yink.in/"><strong>🚀 Open Live Web App</strong></a> •
@@ -16,7 +16,7 @@
     <a href="https://note.yink.in/"><img src="https://img.shields.io/badge/Live%20App-note.yink.in-4F46E5?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Demo" /></a>
     <a href="https://note.yink.in/"><img src="https://img.shields.io/badge/Privacy-100%25%20Offline%20%7C%20No%20Cloud-10B981?style=for-the-badge&logo=shield&logoColor=white" alt="100% Offline No Cloud" /></a>
     <a href="https://note.yink.in/"><img src="https://img.shields.io/badge/PWA-Installable-6366F1?style=for-the-badge&logo=pwa&logoColor=white" alt="PWA Ready" /></a>
-    <a href="https://github.com/glofora/minimal-note"><img src="https://img.shields.io/badge/i18n-16%20Languages-F59E0B?style=for-the-badge&logo=googletranslate&logoColor=white" alt="16 Languages" /></a>
+    <a href="https://github.com/glofora/minimal-note"><img src="https://img.shields.io/badge/i18n-17%20Languages-F59E0B?style=for-the-badge&logo=googletranslate&logoColor=white" alt="17 Languages" /></a>
     <a href="https://note.yink.in/"><img src="https://img.shields.io/badge/Platforms-iOS%20%7C%20Android%20%7C%20macOS%20%7C%20Windows%20%7C%20Linux-0284C7?style=for-the-badge" alt="All Platforms Supported" /></a>
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-gray?style=for-the-badge" alt="License MIT" /></a>
   </p>
@@ -120,8 +120,8 @@
   - Centered floating toast notification for note deletions with instant **Undo**.
   - Positioned cleanly above the Floating Action Button (FAB) on mobile, eliminating off-screen clipping.
 
-- **🌐 16 Global Languages (i18n)**
-  - Fully translated in: **English, Español, Français, Deutsch, Italiano, Português, Русский, Türkçe, العربية, हिन्दी, বাংলা, தமிழ், Bahasa Indonesia, 日本語, 한국어, and 简体中文**.
+- **🌐 17 Global Languages (i18n)**
+  - Fully translated in: **English, Español, Français, Deutsch, Italiano, Português, Русский, Türkçe, العربية, हिन्दी, বাংলা, தமிழ், മലയാളം (Malayalam), Bahasa Indonesia, 日本語, 한국어, and 简体中文**.
   - Searchable language modal accessible from the web header and side drawer.
 
 ---

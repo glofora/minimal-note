@@ -491,7 +491,7 @@ export const NoteEditorModal: React.FC = () => {
                       ) : (
                         <Copy className="w-3.5 h-3.5 text-white/60" />
                       )}
-                      <span>{copied ? 'Copied to clipboard' : 'Copy Text'}</span>
+                      <span>{copied ? t.copied : t.copyText}</span>
                     </button>
 
                     {/* Share */}
@@ -502,7 +502,7 @@ export const NoteEditorModal: React.FC = () => {
                       role="menuitem"
                     >
                       <Share2 className="w-3.5 h-3.5 text-white/60" />
-                      <span>Share Note</span>
+                      <span>{t.share}</span>
                     </button>
 
                     <div className="my-1 border-t border-white/10" />
@@ -515,7 +515,7 @@ export const NoteEditorModal: React.FC = () => {
                       role="menuitem"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
-                      <span>Delete Note</span>
+                      <span>{t.deleteNote}</span>
                     </button>
                   </div>
                 </>

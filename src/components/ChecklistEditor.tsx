@@ -17,6 +17,8 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import type { ChecklistItem } from '@/types/note';
 import { generateUUID } from '@/lib/utils';
+import { useNotesStore } from '@/store/useNotesStore';
+import { getTranslation } from '@/lib/i18n';
 import {
   Check,
   Plus,
@@ -131,6 +133,8 @@ export const ChecklistEditor: React.FC<ChecklistEditorProps> = ({
   items,
   onChange,
 }) => {
+  const { preferences } = useNotesStore();
+  const t = getTranslation(preferences.language);
   const [showCompleted, setShowCompleted] = useState(true);
   const inputRefs = useRef<{ [key: string]: HTMLTextAreaElement | null }>({});
 
@@ -269,7 +273,7 @@ export const ChecklistEditor: React.FC<ChecklistEditorProps> = ({
         className="flex items-center gap-2 text-xs font-medium text-primary hover:text-primary/80 py-1.5 px-2 rounded-xl hover:bg-primary/5 transition-colors cursor-pointer"
       >
         <Plus className="w-4 h-4" />
-        <span>List item</span>
+        <span>{t.addChecklistItem || 'Add checklist item...'}</span>
       </button>
 
       {/* Completed Items Section (Collapsible) */}
@@ -286,7 +290,7 @@ export const ChecklistEditor: React.FC<ChecklistEditorProps> = ({
               <ChevronRight className="w-3.5 h-3.5" />
             )}
             <span>
-              {completedItems.length} completed {completedItems.length === 1 ? 'item' : 'items'}
+              {t.completedItems} ({completedItems.length})
             </span>
           </button>
 

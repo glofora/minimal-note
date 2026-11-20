@@ -128,8 +128,9 @@ export const FlagIcon: React.FC<FlagIconProps> = ({ code, className = 'w-5 h-3.5
         </svg>
       );
 
-    // 🇮🇳 Hindi / India
+    // 🇮🇳 Hindi / Malayalam / India
     case 'hi':
+    case 'ml':
       return (
         <svg viewBox="0 0 640 480" className={`inline-block overflow-hidden rounded-xs shrink-0 align-middle ${className}`}>
           <rect width="640" height="160" fill="#ff9933" />
