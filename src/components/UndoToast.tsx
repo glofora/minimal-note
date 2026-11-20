@@ -35,9 +35,8 @@ export const UndoToast: React.FC = () => {
                 </div>
                 <span className="text-xs sm:text-sm font-semibold truncate">
                   {undoCache.note.title
-                    ? `Deleted "${undoCache.note.title.slice(0, 24)}${
-                        undoCache.note.title.length > 24 ? '...' : ''
-                      }"`
+                    ? `Deleted "${undoCache.note.title.slice(0, 24)}${undoCache.note.title.length > 24 ? '...' : ''
+                    }"`
                     : 'Note deleted'}
                 </span>
               </div>
