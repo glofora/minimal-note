@@ -1,0 +1,20 @@
+{
+  "name": "Minimal Note",
+  "short_name": "Minimal Note",
+  "description": "Distraction-free notes, checklists, OCR text extraction, and smart reminders",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#090d16",
+  "theme_color": "#4f46e5",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
