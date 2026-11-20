@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { NoteItem } from '@/types/note';
 import { NOTE_COLORS } from '@/types/note';
-import { formatReminderDate, formatNoteTimestamp } from '@/lib/utils';
+import { formatReminderDate, formatNoteTimestamp, shareNoteWithImages } from '@/lib/utils';
 import { formatDescriptionToHtml, htmlToPlainText, sanitizeHtml } from '@/lib/sanitize';
 import { useNotesStore } from '@/store/useNotesStore';
 import {
@@ -92,18 +92,12 @@ export const NoteCard: React.FC<NoteCardProps> = ({
         ? note.checklist.map((i) => `${i.isCompleted ? '✓' : '○'} ${i.text}`).join('\n')
         : htmlToPlainText(note.description);
     const shareText = `${note.title}\n\n${content}\n\n— Sent via Minimal Note`;
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: note.title || 'Note',
-          text: shareText,
-        });
-      } catch (err) {
-        if ((err as Error).name !== 'AbortError') {
-          copyToClipboard(shareText);
-        }
-      }
-    } else {
+    const result = await shareNoteWithImages({
+      title: note.title || 'Note',
+      text: shareText,
+      images: note.images,
+    });
+    if (result.method === 'clipboard') {
       copyToClipboard(shareText);
     }
   };

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNotesStore } from '@/store/useNotesStore';
-import { X, Download, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Download, Share2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { shareSingleImage } from '@/lib/utils';
 
 export const ImageLightboxModal: React.FC = () => {
   const {
@@ -39,11 +40,17 @@ export const ImageLightboxModal: React.FC = () => {
 
   if (!currentImage) return null;
 
+  const handleShare = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!currentImage) return;
+    await shareSingleImage(currentImage, `Note Image ${activeIndex + 1}`);
+  };
+
   const handleDownload = (e: React.MouseEvent) => {
     e.stopPropagation();
     const a = document.createElement('a');
     a.href = currentImage;
-    a.download = `note-image-${Date.now()}.png`;
+    a.download = `note-image-${Date.now()}.${currentImage.includes('image/jpeg') ? 'jpg' : 'png'}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -100,6 +107,16 @@ export const ImageLightboxModal: React.FC = () => {
 
         {/* Right Controls */}
         <div className="flex items-center gap-2 pointer-events-auto">
+          <button
+            type="button"
+            onClick={handleShare}
+            className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all active:scale-95 cursor-pointer shadow-lg border border-white/10"
+            title="Share image"
+            aria-label="Share image"
+          >
+            <Share2 className="w-5 h-5" />
+          </button>
+
           <button
             type="button"
             onClick={handleDownload}

@@ -7,6 +7,7 @@ import {
   extractUrls,
   formatReminderDate,
   generateUUID,
+  shareNoteWithImages,
 } from '@/lib/utils';
 import {
   ArrowLeft,
@@ -249,14 +250,12 @@ export const NoteEditorModal: React.FC = () => {
         : htmlToPlainText(description);
 
     const shareText = `${title}\n\n${listSummary}\n\n— Minimal Note`;
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: title || 'Note', text: shareText });
-      } catch {
-        // user canceled
-      }
-    } else {
-      navigator.clipboard.writeText(shareText);
+    const result = await shareNoteWithImages({
+      title: title || 'Note',
+      text: shareText,
+      images,
+    });
+    if (result.method === 'clipboard') {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     }
