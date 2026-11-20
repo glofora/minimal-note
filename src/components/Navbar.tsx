@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNotesStore } from '@/store/useNotesStore';
 import { NOTE_COLORS, type NoteColor } from '@/types/note';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, getColorName } from '@/lib/i18n';
 import { SideNav } from './SideNav';
 import {
   Search,
@@ -126,7 +126,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   title="Click to clear filter"
                 >
                   <span className={`w-2 h-2 rounded-full ${activeColorConfig.dotClass}`} />
-                  <span>{activeColorConfig.label}</span>
+                  <span>{getColorName(activeColorConfig.id, currentLang)}</span>
                   <X className="w-3 h-3 text-muted-foreground hover:text-foreground ml-0.5" />
                 </button>
               )}
@@ -140,11 +140,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                     ? 'bg-primary/10 text-primary border-primary/40 font-bold'
                     : 'bg-muted/60 hover:bg-muted text-foreground border-border/50'
                 }`}
-                title="Filter by Color Tag"
-                aria-label="Filter by Color Tag"
+                title={t.filterByColor}
+                aria-label={t.filterByColor}
               >
                 <Filter className="w-3.5 h-3.5" />
-                <span className="hidden md:inline">Filter</span>
+                <span className="hidden md:inline">{t.filter}</span>
                 {filterColor !== 'all' && (
                   <span className={`w-2 h-2 rounded-full ${activeColorConfig?.dotClass || 'bg-primary'}`} />
                 )}
@@ -277,11 +277,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                     ? 'bg-primary/10 text-primary border-primary/40 font-bold'
                     : 'bg-muted/60 hover:bg-muted text-foreground border-border/50'
                 }`}
-                title="Filter by Color Tag"
-                aria-label="Filter by Color Tag"
+                title={t.filterByColor}
+                aria-label={t.filterByColor}
               >
                 <Filter className="w-3.5 h-3.5" />
-                <span>Filter</span>
+                <span>{t.filter}</span>
                 {filterColor !== 'all' && (
                   <span className={`w-2 h-2 rounded-full ${activeColorConfig?.dotClass || 'bg-primary'}`} />
                 )}
@@ -291,7 +291,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Mobile Active Filter Bar (shown only when a filter is applied) */}
             {activeColorConfig && (
               <div className="flex items-center gap-1.5 pt-0.5">
-                <span className="text-[11px] text-muted-foreground">Filtered by:</span>
+                <span className="text-[11px] text-muted-foreground">{t.filteredBy}</span>
                 <button
                   type="button"
                   onClick={() => setFilterColor('all')}
@@ -299,7 +299,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   title="Clear color filter"
                 >
                   <span className={`w-2 h-2 rounded-full ${activeColorConfig.dotClass}`} />
-                  <span>{activeColorConfig.label}</span>
+                  <span>{getColorName(activeColorConfig.id, currentLang)}</span>
                   <X className="w-3 h-3 text-muted-foreground hover:text-foreground" />
                 </button>
               </div>
@@ -329,8 +329,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <Filter className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-foreground">Filter by Color Tag</h3>
-                  <p className="text-xs text-muted-foreground">Select a color to filter notes</p>
+                  <h3 className="text-base font-bold text-foreground">{t.filterByColor}</h3>
+                  <p className="text-xs text-muted-foreground">{t.selectColorTag}</p>
                 </div>
               </div>
 
@@ -387,7 +387,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       <span className={`w-4 h-4 rounded-full ${conf.dotClass} flex items-center justify-center shrink-0 shadow-xs`}>
                         {isSelected && <Check className="w-2.5 h-2.5 text-white stroke-[3]" />}
                       </span>
-                      <span className="text-xs text-foreground truncate">{conf.label}</span>
+                      <span className="text-xs text-foreground truncate">{getColorName(cKey, currentLang)}</span>
                     </button>
                   );
                 })}
@@ -405,7 +405,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }}
                   className="text-xs font-semibold text-rose-500 hover:text-rose-600 transition-colors cursor-pointer"
                 >
-                  Clear Filter
+                  {t.clearFilter}
                 </button>
               ) : <div />}
 
@@ -414,7 +414,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setIsFilterModalOpen(false)}
                 className="px-4 py-2 rounded-xl text-xs font-bold bg-primary text-primary-foreground hover:opacity-90 active:scale-95 transition-all shadow-md shadow-primary/20 cursor-pointer"
               >
-                Done
+                {t.done}
               </button>
             </div>
           </div>

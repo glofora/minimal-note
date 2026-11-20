@@ -1,10 +1,12 @@
 import React from 'react';
 import { useNotesStore } from '@/store/useNotesStore';
+import { getTranslation } from '@/lib/i18n';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Undo2, X, Trash2 } from 'lucide-react';
 
 export const UndoToast: React.FC = () => {
-  const { undoCache, undoDeleteNote, clearUndoCache } = useNotesStore();
+  const { undoCache, undoDeleteNote, clearUndoCache, preferences } = useNotesStore();
+  const t = getTranslation(preferences.language);
 
   React.useEffect(() => {
     if (!undoCache) return;
@@ -51,7 +53,7 @@ export const UndoToast: React.FC = () => {
                   aria-label="Undo note deletion"
                 >
                   <Undo2 className="w-3.5 h-3.5 stroke-[2.5]" />
-                  <span>UNDO</span>
+                  <span>{t.undo}</span>
                 </button>
 
                 <button

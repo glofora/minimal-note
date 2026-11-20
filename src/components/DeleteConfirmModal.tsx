@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { useNotesStore } from '@/store/useNotesStore';
+import { getTranslation } from '@/lib/i18n';
 import { Trash2, AlertTriangle } from 'lucide-react';
 
 export const DeleteConfirmModal: React.FC = () => {
-  const { noteToDelete, cancelDeleteNote, confirmDeleteNote } = useNotesStore();
+  const { noteToDelete, cancelDeleteNote, confirmDeleteNote, preferences } = useNotesStore();
+  const t = getTranslation(preferences.language);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -62,14 +64,14 @@ export const DeleteConfirmModal: React.FC = () => {
             onClick={cancelDeleteNote}
             className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
           >
-            Cancel
+            {t.cancel}
           </button>
           <button
             type="button"
             onClick={confirmDeleteNote}
             className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-destructive text-destructive-foreground hover:opacity-95 active:scale-95 transition-all shadow-md shadow-destructive/25 cursor-pointer"
           >
-            Delete
+            {t.deleteNote}
           </button>
         </div>
       </div>

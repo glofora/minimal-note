@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNotesStore } from '@/store/useNotesStore';
+import { getTranslation } from '@/lib/i18n';
 import { Bell, Calendar, Clock, Trash2, X } from 'lucide-react';
 import { addHours, format, setHours, setMinutes } from 'date-fns';
 
@@ -8,7 +9,10 @@ export const NoteReminderModal: React.FC = () => {
     noteForReminderModal,
     closeNoteReminderModal,
     updateNoteReminder,
+    preferences,
   } = useNotesStore();
+
+  const t = getTranslation(preferences.language);
 
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
@@ -77,7 +81,7 @@ export const NoteReminderModal: React.FC = () => {
             </div>
             <div>
               <h3 id="reminder-modal-title" className="text-base font-bold text-foreground">
-                Set Reminder
+                {t.remindMe}
               </h3>
               <p className="text-xs text-muted-foreground truncate max-w-[200px]">
                 {noteForReminderModal.title || 'Untitled Note'}
@@ -168,14 +172,14 @@ export const NoteReminderModal: React.FC = () => {
               onClick={closeNoteReminderModal}
               className="px-3.5 py-2 rounded-xl text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
             >
-              Cancel
+              {t.cancel}
             </button>
             <button
               type="button"
               onClick={handleSave}
               className="px-4 py-2 rounded-xl text-xs font-bold bg-primary text-primary-foreground hover:opacity-90 active:scale-95 transition-all shadow-md shadow-primary/20 cursor-pointer"
             >
-              Save
+              {t.saveNote}
             </button>
           </div>
         </div>

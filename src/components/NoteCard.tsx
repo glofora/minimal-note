@@ -381,7 +381,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
                     ? 'text-primary bg-primary/15'
                     : 'text-muted-foreground/50 hover:text-primary hover:bg-muted'
                 }`}
-                title="Reminder settings"
+                title={t.remindMe}
               >
                 <Bell className="w-3.5 h-3.5" />
               </button>
@@ -393,7 +393,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
                   openNoteColorModal(note);
                 }}
                 className="p-1 rounded-md text-muted-foreground/50 hover:text-primary hover:bg-muted transition-colors cursor-pointer"
-                title="Color & tag settings"
+                title={t.colorAndTag}
               >
                 <Palette className="w-3.5 h-3.5" />
               </button>

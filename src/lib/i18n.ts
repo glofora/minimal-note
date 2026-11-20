@@ -111,6 +111,17 @@ export interface TranslationDictionary {
   importBackup: string;
   selectFile: string;
   close: string;
+
+  // Filter & Color Modals
+  filter?: string;
+  filterByColor?: string;
+  filteredBy?: string;
+  clearFilter?: string;
+  done?: string;
+  colorAndTag?: string;
+  selectColorTag?: string;
+  appDescription?: string;
+  undo?: string;
 }
 
 export const TRANSLATIONS: Record<SupportedLanguage, TranslationDictionary> = {
@@ -175,6 +186,15 @@ export const TRANSLATIONS: Record<SupportedLanguage, TranslationDictionary> = {
     importBackup: 'Import Backup',
     selectFile: 'Select File',
     close: 'Close',
+    filter: 'Filter',
+    filterByColor: 'Filter by Color Tag',
+    filteredBy: 'Filtered by:',
+    clearFilter: 'Clear Filter',
+    done: 'Done',
+    colorAndTag: 'Color & Tag',
+    selectColorTag: 'Select Color Tag',
+    appDescription: 'Distraction-free, privacy-first personal notes and checklists with zero cloud storage.',
+    undo: 'UNDO',
   },
   es: {
     appName: 'Minimal Note',
@@ -919,6 +939,15 @@ export const TRANSLATIONS: Record<SupportedLanguage, TranslationDictionary> = {
     importBackup: 'ബാക്കപ്പ് ഇറക്കുമതി ചെയ്യുക',
     selectFile: 'ഫയൽ തിരഞ്ഞെടുക്കുക',
     close: 'അടയ്ക്കുക',
+    filter: 'ഫിൽട്ടർ',
+    filterByColor: 'കളർ ടാഗ് പ്രകാരം ഫിൽട്ടർ ചെയ്യുക',
+    filteredBy: 'ഫിൽട്ടർ ചെയ്തത്:',
+    clearFilter: 'ഫിൽട്ടർ ഒഴിവാക്കുക',
+    done: 'പൂർത്തിയായി',
+    colorAndTag: 'നിറവും ടാഗും',
+    selectColorTag: 'കളർ ടാഗ് തിരഞ്ഞെടുക്കുക',
+    appDescription: 'ക്ലൗഡ് ഇല്ലാത്ത, ശ്രദ്ധ വ്യതിചലിക്കാത്തതും സ്വകാര്യത ഉറപ്പാക്കുന്നതുമായ കുറിപ്പുകളും ചെക്ക്‌ലിസ്റ്റുകളും.',
+    undo: 'പഴയപടിയാക്കുക',
   },
   id: {
     appName: 'Minimal Note',
@@ -1170,9 +1199,222 @@ export const TRANSLATIONS: Record<SupportedLanguage, TranslationDictionary> = {
   },
 };
 
-export function getTranslation(lang?: SupportedLanguage): TranslationDictionary {
-  if (lang && TRANSLATIONS[lang]) {
-    return TRANSLATIONS[lang];
-  }
-  return TRANSLATIONS.en;
+export const COLOR_TRANSLATIONS: Record<string, Record<string, string>> = {
+  en: {
+    default: 'No Tag',
+    indigo: 'Indigo',
+    blue: 'Blue',
+    emerald: 'Emerald',
+    amber: 'Amber',
+    rose: 'Rose',
+    purple: 'Purple',
+    teal: 'Teal',
+    orange: 'Orange',
+    slate: 'Slate',
+  },
+  ml: {
+    default: 'ടാഗ് ഇല്ല',
+    indigo: 'ഇൻഡിഗോ',
+    blue: 'നീല',
+    emerald: 'മരതകം',
+    amber: 'അംബർ',
+    rose: 'റോസ്',
+    purple: 'പർപ്പിൾ',
+    teal: 'ടീൽ',
+    orange: 'ഓറഞ്ച്',
+    slate: 'സ്ലേറ്റ്',
+  },
+  es: {
+    default: 'Sin etiqueta',
+    indigo: 'Índigo',
+    blue: 'Azul',
+    emerald: 'Esmeralda',
+    amber: 'Ámbar',
+    rose: 'Rosa',
+    purple: 'Púrpura',
+    teal: 'Verde azulado',
+    orange: 'Naranja',
+    slate: 'Pizarra',
+  },
+  fr: {
+    default: 'Sans étiquette',
+    indigo: 'Indigo',
+    blue: 'Bleu',
+    emerald: 'Émeraude',
+    amber: 'Ambre',
+    rose: 'Rose',
+    purple: 'Violet',
+    teal: 'Sarcelle',
+    orange: 'Orange',
+    slate: 'Ardoise',
+  },
+  de: {
+    default: 'Kein Tag',
+    indigo: 'Indigo',
+    blue: 'Blau',
+    emerald: 'Smaragd',
+    amber: 'Bernstein',
+    rose: 'Rosa',
+    purple: 'Lila',
+    teal: 'Blaugrün',
+    orange: 'Orange',
+    slate: 'Schiefer',
+  },
+  it: {
+    default: 'Nessun tag',
+    indigo: 'Indaco',
+    blue: 'Blu',
+    emerald: 'Smeraldo',
+    amber: 'Ambra',
+    rose: 'Rosa',
+    purple: 'Viola',
+    teal: 'Ottanio',
+    orange: 'Arancione',
+    slate: 'Ardesia',
+  },
+  pt: {
+    default: 'Sem etiqueta',
+    indigo: 'Índigo',
+    blue: 'Azul',
+    emerald: 'Esmeralda',
+    amber: 'Âmbar',
+    rose: 'Rosa',
+    purple: 'Roxo',
+    teal: 'Verde-petróleo',
+    orange: 'Laranja',
+    slate: 'Ardósia',
+  },
+  ru: {
+    default: 'Без метки',
+    indigo: 'Индиго',
+    blue: 'Синий',
+    emerald: 'Изумруд',
+    amber: 'Янтарь',
+    rose: 'Розовый',
+    purple: 'Фиолетовый',
+    teal: 'Бирюзовый',
+    orange: 'Оранжевый',
+    slate: 'Серый',
+  },
+  tr: {
+    default: 'Etiket yok',
+    indigo: 'İndigo',
+    blue: 'Mavi',
+    emerald: 'Zümrüt',
+    amber: 'Kehribar',
+    rose: 'Gül',
+    purple: 'Mor',
+    teal: 'Camgöbeği',
+    orange: 'Turuncu',
+    slate: 'Arduvaz',
+  },
+  ar: {
+    default: 'بدون وسم',
+    indigo: 'نيلي',
+    blue: 'أزرق',
+    emerald: 'زمردي',
+    amber: 'كهرماني',
+    rose: 'وردي',
+    purple: 'أرجواني',
+    teal: 'أزرق مخضر',
+    orange: 'برتقالي',
+    slate: 'رمادي',
+  },
+  hi: {
+    default: 'कोई टैग नहीं',
+    indigo: 'इंडिगो',
+    blue: 'नीला',
+    emerald: 'पन्ना',
+    amber: 'अंबर',
+    rose: 'गुलाबी',
+    purple: 'बैंगनी',
+    teal: 'टील',
+    orange: 'नारंगी',
+    slate: 'स्लेटी',
+  },
+  bn: {
+    default: 'কোন ট্যাগ নেই',
+    indigo: 'ইন্ডিগো',
+    blue: 'নীল',
+    emerald: 'পান্না',
+    amber: 'অ্যাম্বার',
+    rose: 'গোলাপী',
+    purple: 'বেগুনী',
+    teal: 'টিল',
+    orange: 'কমলা',
+    slate: 'স্লেট',
+  },
+  ta: {
+    default: 'குறிச்சொல் இல்லை',
+    indigo: 'இண்டிகோ',
+    blue: 'நீலம்',
+    emerald: 'மரகதம்',
+    amber: 'ஆம்பர்',
+    rose: 'ரோஸ்',
+    purple: 'ஊதா',
+    teal: 'டீல்',
+    orange: 'ஆரஞ்சு',
+    slate: 'ஸ்லேட்',
+  },
+  id: {
+    default: 'Tanpa Tag',
+    indigo: 'Nila',
+    blue: 'Biru',
+    emerald: 'Zamrud',
+    amber: 'Kuning tua',
+    rose: 'Mawar',
+    purple: 'Ungu',
+    teal: 'Hijau kebiruan',
+    orange: 'Oranye',
+    slate: 'Abu-abu',
+  },
+  ja: {
+    default: 'タグなし',
+    indigo: 'インディゴ',
+    blue: '青',
+    emerald: 'エメラルド',
+    amber: '琥珀',
+    rose: 'ローズ',
+    purple: '紫',
+    teal: 'ティール',
+    orange: 'オレンジ',
+    slate: 'スレート',
+  },
+  ko: {
+    default: '태그 없음',
+    indigo: '인디고',
+    blue: '파랑',
+    emerald: '에메랄드',
+    amber: '호박색',
+    rose: '로즈',
+    purple: '보라',
+    teal: '청록',
+    orange: '주황',
+    slate: '슬레이트',
+  },
+  zh: {
+    default: '无标签',
+    indigo: '靛蓝',
+    blue: '蓝色',
+    emerald: '祖母绿',
+    amber: '琥珀色',
+    rose: '玫瑰红',
+    purple: '紫色',
+    teal: '青色',
+    orange: '橙色',
+    slate: '石板灰',
+  },
+};
+
+export function getColorName(color: string, lang?: SupportedLanguage): string {
+  const current = lang && COLOR_TRANSLATIONS[lang] ? COLOR_TRANSLATIONS[lang] : COLOR_TRANSLATIONS.en;
+  return current[color] || COLOR_TRANSLATIONS.en[color] || color;
+}
+
+export function getTranslation(lang?: SupportedLanguage): Required<TranslationDictionary> {
+  const selected = lang && TRANSLATIONS[lang] ? TRANSLATIONS[lang] : TRANSLATIONS.en;
+  return {
+    ...TRANSLATIONS.en,
+    ...selected,
+  } as Required<TranslationDictionary>;
 }

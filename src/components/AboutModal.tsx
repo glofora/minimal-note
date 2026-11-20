@@ -1,6 +1,8 @@
 import React from 'react';
 import { X, Sparkles, Heart } from 'lucide-react';
 import { GithubStarButton } from './GithubStarButton';
+import { useNotesStore } from '@/store/useNotesStore';
+import { getTranslation } from '@/lib/i18n';
 
 interface AboutModalProps {
   isOpen: boolean;
@@ -8,6 +10,9 @@ interface AboutModalProps {
 }
 
 export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
+  const { preferences } = useNotesStore();
+  const t = getTranslation(preferences.language);
+
   if (!isOpen) return null;
 
   return (
@@ -16,7 +21,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
         <div className="flex justify-end">
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
             aria-label="Close dialog"
           >
             <X className="w-4 h-4" />
@@ -33,13 +38,13 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
         </div>
 
         <p className="text-xs text-muted-foreground leading-relaxed px-2">
-          A distraction-free, privacy-first personal notes and checklist application featuring client-side OCR text extraction, scheduled reminders, and offline IndexedDB persistence.
+          {t.appDescription}
         </p>
 
         {/* GitHub Star Card */}
         <div className="p-3.5 bg-muted/40 rounded-2xl border border-border/70 text-left space-y-2.5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-foreground">Open Source on GitHub</span>
+            <span className="text-xs font-semibold text-foreground">{t.openSource}</span>
             <GithubStarButton variant="modal" />
           </div>
           <div className="text-[11px] text-muted-foreground">

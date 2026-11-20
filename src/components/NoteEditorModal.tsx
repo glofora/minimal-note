@@ -31,7 +31,7 @@ import {
 } from 'lucide-react';
 import { createWorker } from 'tesseract.js';
 import { addHours, format, isBefore, setHours, setMinutes } from 'date-fns';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, getColorName } from '@/lib/i18n';
 import { ChecklistEditor } from './ChecklistEditor';
 import { LinkBadgeList } from './LinkBadgeList';
 import { RichTextEditor } from './RichTextEditor';
@@ -710,7 +710,7 @@ export const NoteEditorModal: React.FC = () => {
                   <Palette className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-foreground">Color & Tag</h3>
+                  <h3 className="text-base font-bold text-foreground">{t.colorAndTag}</h3>
                   <p className="text-xs text-muted-foreground truncate max-w-[200px]">
                     {title || 'Untitled Note'}
                   </p>
@@ -729,7 +729,7 @@ export const NoteEditorModal: React.FC = () => {
             {/* 9 Color Swatches */}
             <div className="space-y-2 pt-1">
               <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block">
-                Select Color Tag
+                {t.selectColorTag}
               </span>
               <div className="grid grid-cols-3 gap-2">
                 {(Object.keys(NOTE_COLORS) as NoteColor[]).map((cKey) => {
@@ -752,7 +752,7 @@ export const NoteEditorModal: React.FC = () => {
                       <span className={`w-5 h-5 rounded-full ${conf.dotClass} flex items-center justify-center shrink-0 shadow-xs`}>
                         {isSelected && <Check className="w-3 h-3 text-white stroke-[3]" />}
                       </span>
-                      <span className="text-xs text-foreground truncate">{conf.label}</span>
+                      <span className="text-xs text-foreground truncate">{getColorName(cKey, preferences.language)}</span>
                     </button>
                   );
                 })}
@@ -765,7 +765,7 @@ export const NoteEditorModal: React.FC = () => {
                 onClick={() => setIsColorModalOpen(false)}
                 className="px-4 py-2 rounded-xl text-xs font-bold bg-primary text-primary-foreground hover:opacity-90 active:scale-95 transition-all shadow-md shadow-primary/20 cursor-pointer"
               >
-                Done
+                {t.done}
               </button>
             </div>
           </div>
