@@ -6,6 +6,7 @@ import {
   type SupportedLanguage,
 } from '@/lib/i18n';
 import { Globe, X, Search, Check } from 'lucide-react';
+import { FlagIcon } from './FlagIcon';
 
 interface LanguageModalProps {
   isOpen: boolean;
@@ -109,9 +110,9 @@ export const LanguageModal: React.FC<LanguageModalProps> = ({ isOpen, onClose })
                     }`}
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <span className="text-2xl shrink-0" aria-hidden="true">
-                        {lang.flag}
-                      </span>
+                      <div className="w-8 h-6 rounded-md overflow-hidden shrink-0 shadow-xs border border-border/70 flex items-center justify-center bg-muted/40">
+                        <FlagIcon code={lang.code} className="w-full h-full object-cover" />
+                      </div>
                       <div className="min-w-0">
                         <span className="block text-xs font-bold leading-tight truncate">
                           {lang.nativeName}

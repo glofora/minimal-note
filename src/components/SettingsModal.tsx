@@ -3,6 +3,7 @@ import { useNotesStore } from '@/store/useNotesStore';
 import { NOTE_COLORS, type NoteColor, type ThemeMode } from '@/types/note';
 import { getTranslation, SUPPORTED_LANGUAGES } from '@/lib/i18n';
 import { X, Moon, Sun, Monitor, Clock, Palette, Globe, ChevronRight } from 'lucide-react';
+import { FlagIcon } from './FlagIcon';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -58,7 +59,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               }}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-muted/80 text-foreground text-xs font-semibold border border-border transition-colors group"
             >
-              <span className="text-sm">{activeLangInfo.flag}</span>
+              <FlagIcon code={activeLangInfo.code} className="w-4.5 h-3 rounded-2xs border border-black/10 shrink-0" />
               <span className="uppercase font-mono text-[11px]">{activeLangInfo.code}</span>
               <ChevronRight className="w-3.5 h-3.5 text-muted-foreground group-hover:translate-x-0.5 transition-transform" />
             </button>

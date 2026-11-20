@@ -3,6 +3,7 @@ import { useNotesStore } from '@/store/useNotesStore';
 import { usePwaStore } from '@/lib/pwa';
 import { getTranslation, SUPPORTED_LANGUAGES } from '@/lib/i18n';
 import { GithubStarButton } from './GithubStarButton';
+import { FlagIcon } from './FlagIcon';
 import {
   X,
   Moon,
@@ -192,8 +193,9 @@ export const SideNav: React.FC<SideNavProps> = ({
                 </div>
               </div>
               <div className="flex items-center gap-1 shrink-0 ml-2">
-                <span className="text-xs px-1.5 py-0.5 rounded-md bg-muted border border-border/60 font-mono text-[10px]">
-                  {activeLangInfo.flag} {activeLangInfo.code.toUpperCase()}
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-muted border border-border/60 font-mono text-[10px]">
+                  <FlagIcon code={activeLangInfo.code} className="w-4 h-2.5 rounded-2xs border border-black/10 shrink-0" />
+                  <span>{activeLangInfo.code.toUpperCase()}</span>
                 </span>
                 <ChevronRight className="w-3.5 h-3.5 text-muted-foreground group-hover:translate-x-0.5 transition-transform" />
               </div>
