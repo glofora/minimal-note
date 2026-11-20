@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { NoteItem } from '@/types/note';
 import { NOTE_COLORS } from '@/types/note';
-import { formatReminderDate, formatNoteTimestamp } from '@/lib/utils';
+import { formatReminderDate, formatNoteTimestamp, cleanFormattedSnippet } from '@/lib/utils';
 import { useNotesStore } from '@/store/useNotesStore';
 import {
   Bell,
@@ -206,7 +206,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
             <p className="text-xs text-muted-foreground/80 truncate leading-normal">
               {note.noteType === 'checklist' && checklistItems.length > 0
                 ? checklistItems.map((i) => `${i.isCompleted ? '✓' : '○'} ${i.text}`).join(' · ')
-                : note.description || 'No additional text'}
+                : cleanFormattedSnippet(note.description) || 'No additional text'}
             </p>
 
             {/* Bottom metadata */}
@@ -550,7 +550,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
           ) : (
             note.description && (
               <p className="text-xs text-muted-foreground/90 line-clamp-2 sm:line-clamp-3 leading-relaxed break-words">
-                {note.description}
+                {cleanFormattedSnippet(note.description)}
               </p>
             )
           )}

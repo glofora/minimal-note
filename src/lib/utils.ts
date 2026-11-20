@@ -72,6 +72,19 @@ export function autoCapitalize(text: string): string {
 }
 
 /**
+ * Strip markdown formatting tokens from text for compact snippet previews in cards
+ */
+export function cleanFormattedSnippet(text: string): string {
+  if (!text) return '';
+  return text
+    .replace(/^#+\s+/gm, '') // Remove heading markers
+    .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
+    .replace(/\*(.*?)\*/g, '$1') // Remove italic
+    .replace(/<\/?u>/gi, '') // Remove underline
+    .trim();
+}
+
+/**
  * Extract all HTTP/HTTPS and www URLs from given text
  */
 export function extractUrls(text: string): string[] {
