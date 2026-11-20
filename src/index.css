@@ -76,6 +76,17 @@
   }
 }
 
+/* Eliminate browser default black focus rings / borders on contentEditable */
+[contenteditable],
+[contenteditable]:focus,
+[contenteditable]:focus-visible,
+[contenteditable] *:focus,
+[contenteditable] *:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent;
+}
+
 /* Custom minimal scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

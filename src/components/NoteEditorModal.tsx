@@ -544,7 +544,7 @@ export const NoteEditorModal: React.FC = () => {
               value={title}
               onChange={handleTitleChange}
               autoFocus
-              className="w-full text-xl sm:text-2xl font-bold bg-transparent border-none focus:outline-none placeholder:text-muted-foreground/40 text-foreground"
+              className="w-full text-xl sm:text-2xl font-bold bg-transparent border-none outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 focus-visible:ring-0 placeholder:text-muted-foreground/40 text-foreground"
             />
           </div>
 
