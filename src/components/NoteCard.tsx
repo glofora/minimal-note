@@ -3,7 +3,8 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { NoteItem } from '@/types/note';
 import { NOTE_COLORS } from '@/types/note';
-import { formatReminderDate, formatNoteTimestamp, cleanFormattedSnippet } from '@/lib/utils';
+import { formatReminderDate, formatNoteTimestamp } from '@/lib/utils';
+import { formatDescriptionToHtml, htmlToPlainText, sanitizeHtml } from '@/lib/sanitize';
 import { useNotesStore } from '@/store/useNotesStore';
 import {
   Bell,
@@ -89,7 +90,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
     const content =
       note.noteType === 'checklist' && note.checklist
         ? note.checklist.map((i) => `${i.isCompleted ? '✓' : '○'} ${i.text}`).join('\n')
-        : note.description;
+        : htmlToPlainText(note.description);
     const shareText = `${note.title}\n\n${content}\n\n— Sent via Minimal Note`;
     if (navigator.share) {
       try {
@@ -113,7 +114,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
     const content =
       note.noteType === 'checklist' && note.checklist
         ? note.checklist.map((i) => `${i.isCompleted ? '✓' : '○'} ${i.text}`).join('\n')
-        : note.description;
+        : htmlToPlainText(note.description);
     const shareText = `${note.title}\n\n${content}`.trim();
     copyToClipboard(shareText);
   };
@@ -340,9 +341,12 @@ export const NoteCard: React.FC<NoteCardProps> = ({
             </div>
           ) : (
             note.description && (
-              <p className="text-xs text-muted-foreground/90 line-clamp-2 sm:line-clamp-3 leading-relaxed break-words">
-                {cleanFormattedSnippet(note.description)}
-              </p>
+              <div
+                className="text-xs text-muted-foreground/90 line-clamp-2 sm:line-clamp-3 leading-relaxed break-words [&>p]:mb-1 [&>ul]:list-disc [&>ul]:pl-4 [&>ol]:list-decimal [&>ol]:pl-4 [&>a]:text-primary [&>a]:underline [&>strong]:text-foreground [&>b]:text-foreground [&>strong]:font-semibold [&>b]:font-semibold [&>s]:line-through [&>strike]:line-through"
+                dangerouslySetInnerHTML={{
+                  __html: sanitizeHtml(formatDescriptionToHtml(note.description)),
+                }}
+              />
             )
           )}
 

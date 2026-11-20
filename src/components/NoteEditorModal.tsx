@@ -27,20 +27,14 @@ import {
   MoreVertical,
   X,
   Palette,
-  Bold,
-  Italic,
-  Underline,
-  Heading1,
-  Heading2,
-  Eye,
-  PenLine,
 } from 'lucide-react';
 import { createWorker } from 'tesseract.js';
 import { addHours, format, isBefore, setHours, setMinutes } from 'date-fns';
 import { getTranslation } from '@/lib/i18n';
 import { ChecklistEditor } from './ChecklistEditor';
 import { LinkBadgeList } from './LinkBadgeList';
-import { FormattedText } from './FormattedText';
+import { RichTextEditor } from './RichTextEditor';
+import { formatDescriptionToHtml, htmlToPlainText } from '@/lib/sanitize';
 
 export const NoteEditorModal: React.FC = () => {
   const {
@@ -70,12 +64,10 @@ export const NoteEditorModal: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isColorModalOpen, setIsColorModalOpen] = useState(false);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
-  const [isPreviewMode, setIsPreviewMode] = useState(false);
 
   const menuRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const t = getTranslation(preferences.language);
 
@@ -99,12 +91,11 @@ export const NoteEditorModal: React.FC = () => {
   useEffect(() => {
     if (activeEditingNote) {
       setTitle(activeEditingNote.title || '');
-      setDescription(activeEditingNote.description || '');
+      setDescription(formatDescriptionToHtml(activeEditingNote.description || ''));
       setColor(activeEditingNote.color || preferences.defaultColor);
       setNoteType(activeEditingNote.noteType || 'text');
       setChecklist(activeEditingNote.checklist || []);
       setIsPinned(Boolean(activeEditingNote.isPinned));
-      setIsPreviewMode(false);
 
       const existingImages =
         activeEditingNote.images && activeEditingNote.images.length > 0
@@ -127,14 +118,6 @@ export const NoteEditorModal: React.FC = () => {
       }
     }
   }, [activeEditingNote, preferences.defaultColor]);
-
-  // Dynamic auto-resize description textarea
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${Math.max(120, textareaRef.current.scrollHeight)}px`;
-    }
-  }, [description]);
 
   if (!isEditorOpen || !activeEditingNote) return null;
 
@@ -186,7 +169,9 @@ export const NoteEditorModal: React.FC = () => {
           }));
           setChecklist((prev) => [...prev, ...newItems]);
         } else {
-          setDescription((prev) => (prev ? `${prev}\n\n${extractedText}` : extractedText));
+          setDescription((prev) =>
+            prev ? `${prev}<br/><br/>${extractedText}` : formatDescriptionToHtml(extractedText)
+          );
         }
       }
     } catch (err) {
@@ -198,7 +183,8 @@ export const NoteEditorModal: React.FC = () => {
 
   const toggleCheckboxesMode = () => {
     if (noteType === 'text') {
-      const lines = description
+      const plain = htmlToPlainText(description);
+      const lines = plain
         .split('\n')
         .map((l) => l.trim())
         .filter((l) => l.length > 0);
@@ -214,11 +200,12 @@ export const NoteEditorModal: React.FC = () => {
       setChecklist(newItems);
       setNoteType('checklist');
     } else {
-      const text = checklist
+      const html = checklist
         .map((i) => i.text.trim())
         .filter((t) => t.length > 0)
-        .join('\n');
-      setDescription(text);
+        .map((t) => `<p>${t}</p>`)
+        .join('');
+      setDescription(html);
       setNoteType('text');
     }
   };
@@ -227,121 +214,6 @@ export const NoteEditorModal: React.FC = () => {
     setChecklist(items);
     if (activeEditingNote?.id) {
       updateChecklistOrder(activeEditingNote.id, items);
-    }
-  };
-
-  const applyFormat = (formatType: 'bold' | 'italic' | 'underline' | 'h1' | 'h2') => {
-    if (isPreviewMode) {
-      setIsPreviewMode(false);
-    }
-
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const currentVal = description;
-    const selectedText = currentVal.substring(start, end);
-
-    let newVal = currentVal;
-    let newStart = start;
-    let newEnd = end;
-
-    if (formatType === 'bold') {
-      if (selectedText.startsWith('**') && selectedText.endsWith('**') && selectedText.length >= 4) {
-        const unwrapped = selectedText.slice(2, -2);
-        newVal = currentVal.substring(0, start) + unwrapped + currentVal.substring(end);
-        newStart = start;
-        newEnd = start + unwrapped.length;
-      } else {
-        const wrapped = `**${selectedText || 'bold text'}**`;
-        newVal = currentVal.substring(0, start) + wrapped + currentVal.substring(end);
-        newStart = start + 2;
-        newEnd = start + wrapped.length - 2;
-      }
-    } else if (formatType === 'italic') {
-      if (selectedText.startsWith('*') && selectedText.endsWith('*') && selectedText.length >= 2) {
-        const unwrapped = selectedText.slice(1, -1);
-        newVal = currentVal.substring(0, start) + unwrapped + currentVal.substring(end);
-        newStart = start;
-        newEnd = start + unwrapped.length;
-      } else {
-        const wrapped = `*${selectedText || 'italic text'}*`;
-        newVal = currentVal.substring(0, start) + wrapped + currentVal.substring(end);
-        newStart = start + 1;
-        newEnd = start + wrapped.length - 1;
-      }
-    } else if (formatType === 'underline') {
-      if (
-        selectedText.toLowerCase().startsWith('<u>') &&
-        selectedText.toLowerCase().endsWith('</u>') &&
-        selectedText.length >= 7
-      ) {
-        const unwrapped = selectedText.slice(3, -4);
-        newVal = currentVal.substring(0, start) + unwrapped + currentVal.substring(end);
-        newStart = start;
-        newEnd = start + unwrapped.length;
-      } else {
-        const wrapped = `<u>${selectedText || 'underlined text'}</u>`;
-        newVal = currentVal.substring(0, start) + wrapped + currentVal.substring(end);
-        newStart = start + 3;
-        newEnd = start + wrapped.length - 4;
-      }
-    } else if (formatType === 'h1' || formatType === 'h2') {
-      const lineStart = currentVal.lastIndexOf('\n', start - 1) + 1;
-      let lineEnd = currentVal.indexOf('\n', end);
-      if (lineEnd === -1) lineEnd = currentVal.length;
-
-      const lineText = currentVal.substring(lineStart, lineEnd);
-
-      let newLineText = lineText;
-      if (formatType === 'h1') {
-        if (lineText.startsWith('# ')) {
-          newLineText = lineText.slice(2);
-        } else if (lineText.startsWith('## ')) {
-          newLineText = '# ' + lineText.slice(3);
-        } else {
-          newLineText = '# ' + lineText;
-        }
-      } else {
-        // h2
-        if (lineText.startsWith('## ')) {
-          newLineText = lineText.slice(3);
-        } else if (lineText.startsWith('# ')) {
-          newLineText = '## ' + lineText.slice(2);
-        } else {
-          newLineText = '## ' + lineText;
-        }
-      }
-
-      newVal = currentVal.substring(0, lineStart) + newLineText + currentVal.substring(lineEnd);
-      const diff = newLineText.length - lineText.length;
-      newStart = Math.max(lineStart, start + diff);
-      newEnd = Math.max(lineStart, end + diff);
-    }
-
-    setDescription(newVal);
-
-    requestAnimationFrame(() => {
-      if (textareaRef.current) {
-        textareaRef.current.focus();
-        textareaRef.current.setSelectionRange(newStart, newEnd);
-      }
-    });
-  };
-
-  const handleTextareaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.ctrlKey || e.metaKey) {
-      if (e.key === 'b' || e.key === 'B') {
-        e.preventDefault();
-        applyFormat('bold');
-      } else if (e.key === 'i' || e.key === 'I') {
-        e.preventDefault();
-        applyFormat('italic');
-      } else if (e.key === 'u' || e.key === 'U') {
-        e.preventDefault();
-        applyFormat('underline');
-      }
     }
   };
 
@@ -374,7 +246,7 @@ export const NoteEditorModal: React.FC = () => {
     const listSummary =
       noteType === 'checklist'
         ? checklist.map((i) => `${i.isCompleted ? '✓' : '○'} ${i.text}`).join('\n')
-        : description;
+        : htmlToPlainText(description);
 
     const shareText = `${title}\n\n${listSummary}\n\n— Minimal Note`;
     if (navigator.share) {
@@ -395,7 +267,7 @@ export const NoteEditorModal: React.FC = () => {
     const listSummary =
       noteType === 'checklist'
         ? checklist.map((i) => `${i.isCompleted ? '✓' : '○'} ${i.text}`).join('\n')
-        : description;
+        : htmlToPlainText(description);
     const text = `${title}\n\n${listSummary}`.trim();
     navigator.clipboard.writeText(text);
     setCopied(true);
@@ -807,116 +679,12 @@ export const NoteEditorModal: React.FC = () => {
               <ChecklistEditor items={checklist} onChange={handleChecklistChange} />
             </div>
           ) : (
-            <div className="pb-6 space-y-2.5">
-              {/* Text Formatter Toolbar: Bold, Italic, Underline, H1, H2 & Preview */}
-              <div className="flex items-center justify-between border-b border-border/50 pb-2">
-                <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
-                  {/* Bold Button */}
-                  <button
-                    type="button"
-                    onClick={() => applyFormat('bold')}
-                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted active:scale-95 transition-all cursor-pointer"
-                    title="Bold (Ctrl+B)"
-                    aria-label="Format bold"
-                  >
-                    <Bold className="w-3.5 h-3.5" />
-                  </button>
-
-                  {/* Italic Button */}
-                  <button
-                    type="button"
-                    onClick={() => applyFormat('italic')}
-                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted active:scale-95 transition-all cursor-pointer"
-                    title="Italic (Ctrl+I)"
-                    aria-label="Format italic"
-                  >
-                    <Italic className="w-3.5 h-3.5" />
-                  </button>
-
-                  {/* Underline Button */}
-                  <button
-                    type="button"
-                    onClick={() => applyFormat('underline')}
-                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted active:scale-95 transition-all cursor-pointer"
-                    title="Underline (Ctrl+U)"
-                    aria-label="Format underline"
-                  >
-                    <Underline className="w-3.5 h-3.5" />
-                  </button>
-
-                  <div className="h-4 w-px bg-border/60 mx-0.5" />
-
-                  {/* Heading 1 */}
-                  <button
-                    type="button"
-                    onClick={() => applyFormat('h1')}
-                    className="px-2 py-1 rounded-lg text-xs font-bold text-muted-foreground hover:text-foreground hover:bg-muted active:scale-95 transition-all cursor-pointer inline-flex items-center gap-0.5"
-                    title="Heading 1"
-                    aria-label="Format Heading 1"
-                  >
-                    <Heading1 className="w-3.5 h-3.5" />
-                  </button>
-
-                  {/* Heading 2 */}
-                  <button
-                    type="button"
-                    onClick={() => applyFormat('h2')}
-                    className="px-2 py-1 rounded-lg text-xs font-bold text-muted-foreground hover:text-foreground hover:bg-muted active:scale-95 transition-all cursor-pointer inline-flex items-center gap-0.5"
-                    title="Heading 2"
-                    aria-label="Format Heading 2"
-                  >
-                    <Heading2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-
-                {/* Preview / Edit Toggle */}
-                <button
-                  type="button"
-                  onClick={() => setIsPreviewMode((prev) => !prev)}
-                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                    isPreviewMode
-                      ? 'bg-primary/15 text-primary border border-primary/30'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                  }`}
-                  title={isPreviewMode ? 'Switch to edit mode' : 'Preview formatted text'}
-                >
-                  {isPreviewMode ? (
-                    <>
-                      <PenLine className="w-3.5 h-3.5" />
-                      <span>Edit</span>
-                    </>
-                  ) : (
-                    <>
-                      <Eye className="w-3.5 h-3.5" />
-                      <span>Preview</span>
-                    </>
-                  )}
-                </button>
-              </div>
-
-              {/* Text Writing Area OR Formatted Text Preview */}
-              {isPreviewMode ? (
-                <div
-                  onClick={() => setIsPreviewMode(false)}
-                  className="min-h-[160px] py-1 cursor-text"
-                  title="Click to edit"
-                >
-                  {description.trim() ? (
-                    <FormattedText content={description} />
-                  ) : (
-                    <p className="text-sm italic text-muted-foreground/40">Nothing to preview yet.</p>
-                  )}
-                </div>
-              ) : (
-                <textarea
-                  ref={textareaRef}
-                  placeholder={t.notePlaceholder}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  onKeyDown={handleTextareaKeyDown}
-                  className="w-full min-h-[160px] text-sm sm:text-base leading-relaxed bg-transparent border-none resize-none focus:outline-none placeholder:text-muted-foreground/40 text-foreground transition-all"
-                />
-              )}
+            <div className="pb-6">
+              <RichTextEditor
+                value={description}
+                onChange={setDescription}
+                placeholder={t.notePlaceholder}
+              />
             </div>
           )}
         </div>
