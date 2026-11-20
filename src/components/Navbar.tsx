@@ -115,8 +115,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span className="font-mono text-[11px] uppercase">{activeLangInfo.code}</span>
               </button>
 
-              {/* GitHub Star Link with Live Count */}
-              <GithubStarButton variant="navbar" />
+              {/* GitHub Star Link with Live Count (Desktop Only - already in mobile SideNav) */}
+              <GithubStarButton variant="navbar" className="hidden sm:inline-flex" />
 
               {/* Desktop Only: PWA Install Button */}
               {isInstallable && (

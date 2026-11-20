@@ -144,23 +144,26 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note, is24Hour, onEdit }) =>
       {/* Foreground card */}
       <motion.div
         style={{ x, opacity }}
-        drag="x"
+        drag={isDragging ? false : 'x'}
         dragConstraints={{ left: 0, right: 0 }}
-        dragElastic={0.7}
+        dragElastic={0.65}
         onDragEnd={handleDragEnd}
         onClick={() => onEdit(note)}
-        className={`group relative flex items-start gap-3.5 p-4 bg-card hover:bg-card/90 dark:bg-card border ${colorConfig.borderLight} ${colorConfig.borderDark} rounded-2xl shadow-xs hover:shadow-md transition-all cursor-pointer`}
+        className={`group relative flex items-start gap-3 p-4 bg-card hover:bg-card/90 dark:bg-card border ${colorConfig.borderLight} ${colorConfig.borderDark} rounded-2xl shadow-xs hover:shadow-md transition-all cursor-pointer`}
       >
-        {/* Drag Reorder Handle */}
-        <button
+        {/* Spacious Drag & Position Change Handle (Hold to reorder) */}
+        <div
           {...attributes}
           {...listeners}
           onClick={(e) => e.stopPropagation()}
-          className="mt-1 p-1 -ml-1 text-muted-foreground/30 group-hover:text-muted-foreground/80 hover:bg-muted rounded cursor-grab active:cursor-grabbing transition-colors"
-          title="Drag to reorder"
+          onPointerDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+          className="self-stretch w-10 sm:w-9 -my-4 -ml-4 pl-3 pr-1.5 flex items-center justify-center text-muted-foreground/35 hover:text-foreground active:text-primary hover:bg-muted/60 active:bg-primary/10 rounded-l-2xl cursor-grab active:cursor-grabbing touch-none select-none transition-colors group/handle shrink-0"
+          title="Hold & drag to change position"
+          aria-label="Hold and drag to change position"
         >
-          <GripVertical className="w-4 h-4" />
-        </button>
+          <GripVertical className="w-5 h-5 group-hover/handle:scale-110 transition-transform" />
+        </div>
 
         {/* Circular Avatar / Primary Thumbnail */}
         <div className="shrink-0 mt-0.5">
