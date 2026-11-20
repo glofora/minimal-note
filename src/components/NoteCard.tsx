@@ -515,16 +515,16 @@ export const NoteCard: React.FC<NoteCardProps> = ({
                     e.stopPropagation();
                     toggleChecklistItem(note.id, item.id);
                   }}
-                  className="flex items-center gap-2 text-xs text-foreground/85 hover:text-foreground cursor-pointer"
+                  className="flex items-start gap-2.5 text-xs text-foreground/85 hover:text-foreground cursor-pointer"
                 >
                   <input
                     type="checkbox"
                     checked={item.isCompleted}
                     onChange={() => {}}
-                    className="w-3.5 h-3.5 rounded border-border text-primary focus:ring-primary/20 cursor-pointer shrink-0"
+                    className="w-3.5 h-3.5 mt-0.5 rounded border-border text-primary focus:ring-primary/20 cursor-pointer shrink-0"
                   />
                   <span
-                    className={`truncate ${
+                    className={`whitespace-normal break-words leading-snug flex-1 ${
                       item.isCompleted
                         ? 'line-through text-muted-foreground/60'
                         : 'text-foreground'

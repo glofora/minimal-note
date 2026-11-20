@@ -34,11 +34,11 @@ interface ChecklistEditorProps {
 interface SortableChecklistItemProps {
   item: ChecklistItem;
   index: number;
-  inputRef: (el: HTMLInputElement | null) => void;
+  inputRef: (el: HTMLTextAreaElement | null) => void;
   onToggle: (id: string) => void;
   onTextChange: (id: string, text: string) => void;
   onDelete: (id: string) => void;
-  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
 }
 
 const SortableChecklistItem: React.FC<SortableChecklistItemProps> = ({
@@ -67,7 +67,7 @@ const SortableChecklistItem: React.FC<SortableChecklistItemProps> = ({
     <div
       ref={setNodeRef}
       style={style}
-      className={`group flex items-center gap-2 py-1 px-1.5 rounded-xl transition-all ${
+      className={`group flex items-start gap-2.5 py-1 px-1.5 rounded-xl transition-all ${
         isDragging
           ? 'z-40 bg-muted/90 shadow-md scale-[1.01] ring-1 ring-primary/30'
           : 'hover:bg-muted/40'
@@ -77,7 +77,7 @@ const SortableChecklistItem: React.FC<SortableChecklistItemProps> = ({
       <div
         {...attributes}
         {...listeners}
-        className="p-1 -ml-0.5 text-muted-foreground/40 hover:text-foreground active:text-primary cursor-grab active:cursor-grabbing touch-none select-none transition-colors"
+        className="mt-0.5 p-1 -ml-0.5 text-muted-foreground/40 hover:text-foreground active:text-primary cursor-grab active:cursor-grabbing touch-none select-none transition-colors shrink-0"
         title="Drag to reorder"
         aria-label="Drag to reorder checklist item"
       >
@@ -88,27 +88,37 @@ const SortableChecklistItem: React.FC<SortableChecklistItemProps> = ({
       <button
         type="button"
         onClick={() => onToggle(item.id)}
-        className="w-4 h-4 rounded border-2 border-muted-foreground/50 hover:border-primary flex items-center justify-center shrink-0 transition-colors cursor-pointer"
+        className="mt-0.5 w-4 h-4 rounded border-2 border-muted-foreground/50 hover:border-primary flex items-center justify-center shrink-0 transition-colors cursor-pointer"
       >
         {item.isCompleted && <Check className="w-3 h-3 text-primary stroke-[3]" />}
       </button>
 
-      {/* Text Input */}
-      <input
-        ref={inputRef}
-        type="text"
+      {/* Multi-line auto-wrapping Textarea */}
+      <textarea
+        ref={(el) => {
+          inputRef(el);
+          if (el) {
+            el.style.height = 'auto';
+            el.style.height = `${el.scrollHeight}px`;
+          }
+        }}
+        rows={1}
         value={item.text}
         placeholder="List item"
-        onChange={(e) => onTextChange(item.id, e.target.value)}
+        onChange={(e) => {
+          onTextChange(item.id, e.target.value);
+          e.target.style.height = 'auto';
+          e.target.style.height = `${e.target.scrollHeight}px`;
+        }}
         onKeyDown={onKeyDown}
-        className="flex-1 bg-transparent border-none text-sm text-foreground focus:outline-none placeholder:text-muted-foreground/40"
+        className="flex-1 bg-transparent border-none text-sm text-foreground focus:outline-none placeholder:text-muted-foreground/40 resize-none whitespace-normal break-words leading-snug py-0.5 overflow-hidden"
       />
 
       {/* Delete button */}
       <button
         type="button"
         onClick={() => onDelete(item.id)}
-        className="opacity-60 sm:opacity-0 sm:group-hover:opacity-100 p-1 text-muted-foreground hover:text-destructive rounded transition-all cursor-pointer"
+        className="mt-0.5 opacity-60 sm:opacity-0 sm:group-hover:opacity-100 p-1 text-muted-foreground hover:text-destructive rounded transition-all cursor-pointer shrink-0"
         title="Delete item"
       >
         <Trash2 className="w-3.5 h-3.5" />
@@ -122,7 +132,7 @@ export const ChecklistEditor: React.FC<ChecklistEditorProps> = ({
   onChange,
 }) => {
   const [showCompleted, setShowCompleted] = useState(true);
-  const inputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
+  const inputRefs = useRef<{ [key: string]: HTMLTextAreaElement | null }>({});
 
   const activeItems = items.filter((item) => !item.isCompleted);
   const completedItems = items.filter((item) => item.isCompleted);
@@ -175,7 +185,7 @@ export const ChecklistEditor: React.FC<ChecklistEditorProps> = ({
   };
 
   const handleKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
+    e: React.KeyboardEvent<HTMLTextAreaElement>,
     index: number,
     item: ChecklistItem
   ) => {
@@ -285,30 +295,40 @@ export const ChecklistEditor: React.FC<ChecklistEditorProps> = ({
               {completedItems.map((item) => (
                 <div
                   key={item.id}
-                  className="group flex items-center gap-2 py-1 px-1.5 rounded-xl hover:bg-muted/40 transition-colors"
+                  className="group flex items-start gap-2.5 py-1 px-1.5 rounded-xl hover:bg-muted/40 transition-colors"
                 >
                   {/* Checkbox */}
                   <button
                     type="button"
                     onClick={() => handleToggle(item.id)}
-                    className="w-4 h-4 rounded bg-primary text-primary-foreground flex items-center justify-center shrink-0 shadow-2xs cursor-pointer"
+                    className="mt-0.5 w-4 h-4 rounded bg-primary text-primary-foreground flex items-center justify-center shrink-0 shadow-2xs cursor-pointer"
                   >
                     <Check className="w-3 h-3 stroke-[3]" />
                   </button>
 
-                  {/* Checked text */}
-                  <input
-                    type="text"
+                  {/* Checked multi-line text */}
+                  <textarea
+                    rows={1}
                     value={item.text}
-                    onChange={(e) => handleTextChange(item.id, e.target.value)}
-                    className="flex-1 bg-transparent border-none text-sm text-muted-foreground line-through focus:outline-none"
+                    ref={(el) => {
+                      if (el) {
+                        el.style.height = 'auto';
+                        el.style.height = `${el.scrollHeight}px`;
+                      }
+                    }}
+                    onChange={(e) => {
+                      handleTextChange(item.id, e.target.value);
+                      e.target.style.height = 'auto';
+                      e.target.style.height = `${e.target.scrollHeight}px`;
+                    }}
+                    className="flex-1 bg-transparent border-none text-sm text-muted-foreground line-through focus:outline-none resize-none whitespace-normal break-words leading-snug py-0.5 overflow-hidden"
                   />
 
                   {/* Delete button */}
                   <button
                     type="button"
                     onClick={() => handleDelete(item.id)}
-                    className="opacity-60 sm:opacity-0 sm:group-hover:opacity-100 p-1 text-muted-foreground hover:text-destructive rounded transition-all cursor-pointer"
+                    className="mt-0.5 opacity-60 sm:opacity-0 sm:group-hover:opacity-100 p-1 text-muted-foreground hover:text-destructive rounded transition-all cursor-pointer shrink-0"
                     title="Delete item"
                   >
                     <Trash2 className="w-3.5 h-3.5" />

@@ -22,7 +22,7 @@ export const UndoToast: React.FC = () => {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.95 }}
           transition={{ type: 'spring', stiffness: 450, damping: 30 }}
-          className="fixed bottom-24 sm:bottom-8 left-1/2 -translate-x-1/2 z-[4500] w-[calc(100%-2rem)] max-w-md pointer-events-auto"
+          className="fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-[4500] w-[calc(100%-2rem)] max-w-md pointer-events-auto"
         >
           <div className="flex items-center justify-between gap-3 px-4 py-3 bg-zinc-900/95 dark:bg-zinc-100/95 text-zinc-100 dark:text-zinc-900 backdrop-blur-md rounded-2xl shadow-2xl border border-zinc-700/60 dark:border-zinc-300/80">
             {/* Left: Message & Trash Icon */}
