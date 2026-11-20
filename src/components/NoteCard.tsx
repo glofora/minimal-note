@@ -137,7 +137,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
     requestDeleteNote(note.id, note.title);
   };
 
-  const colorConfig = NOTE_COLORS[note.color] || NOTE_COLORS.indigo;
+  const colorConfig = NOTE_COLORS[note.color] || NOTE_COLORS.default;
 
   // Checklist counts
   const checklistItems = note.checklist || [];
@@ -158,33 +158,35 @@ export const NoteCard: React.FC<NoteCardProps> = ({
           : 'z-0'
       }`}
     >
-        <div
-          onClick={() => onEdit(note)}
-          className={`group relative flex flex-col gap-2 p-3 sm:p-3.5 bg-card hover:bg-card/90 dark:bg-card border ${colorConfig.borderLight} ${colorConfig.borderDark} rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-sm transition-all cursor-pointer w-full`}
-        >
-          {/* Top Bar: Handle + Color + Title + Actions */}
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2 min-w-0 flex-1">
-              <div
-                {...attributes}
-                {...listeners}
-                onClick={(e) => e.stopPropagation()}
-                className="p-1 -ml-1 text-muted-foreground/30 hover:text-foreground active:text-primary cursor-grab active:cursor-grabbing touch-none select-none transition-colors"
-                title="Drag to reorder"
-              >
-                <GripVertical className="w-4 h-4" />
-              </div>
-
-              <span className={`w-2 h-2 rounded-full ${colorConfig.dotClass} shrink-0`} />
-
-              {note.isPinned && (
-                <Pin className="w-3.5 h-3.5 fill-primary text-primary -rotate-12 shrink-0" />
-              )}
-
-              <h3 className="font-semibold text-sm sm:text-base text-foreground leading-tight truncate">
-                {note.title || 'Untitled Note'}
-              </h3>
+      <div
+        onClick={() => onEdit(note)}
+        className={`group relative flex flex-col gap-2 p-3 sm:p-3.5 ${colorConfig.bgLight} ${colorConfig.bgDark} border ${colorConfig.borderLight} ${colorConfig.borderDark} rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-sm transition-all cursor-pointer w-full`}
+      >
+        {/* Top Bar: Handle + Color + Title + Actions */}
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <div
+              {...attributes}
+              {...listeners}
+              onClick={(e) => e.stopPropagation()}
+              className="p-1 -ml-1 text-muted-foreground/30 hover:text-foreground active:text-primary cursor-grab active:cursor-grabbing touch-none select-none transition-colors"
+              title="Drag to reorder"
+            >
+              <GripVertical className="w-4 h-4" />
             </div>
+
+            {note.color && note.color !== 'default' && (
+              <span className={`w-2 h-2 rounded-full ${colorConfig.dotClass} shrink-0`} />
+            )}
+
+            {note.isPinned && (
+              <Pin className="w-3.5 h-3.5 fill-primary text-primary -rotate-12 shrink-0" />
+            )}
+
+            <h3 className="font-semibold text-sm sm:text-base text-foreground leading-tight truncate">
+              {note.title || 'Untitled Note'}
+            </h3>
+          </div>
 
             {/* Card Action Menu */}
             <div

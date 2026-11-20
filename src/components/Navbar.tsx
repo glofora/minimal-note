@@ -45,6 +45,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const t = getTranslation(currentLang);
 
   const colorsList: NoteColor[] = [
+    'default',
     'indigo',
     'blue',
     'emerald',

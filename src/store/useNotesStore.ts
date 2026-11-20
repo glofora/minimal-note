@@ -93,7 +93,7 @@ export const useNotesStore = create<NotesState>((set, get) => ({
   preferences: {
     theme: 'system',
     is24HourFormat: false,
-    defaultColor: 'indigo',
+    defaultColor: 'default',
     enableSound: true,
     viewMode: (typeof localStorage !== 'undefined' && (localStorage.getItem('minimal_note_view_mode') as 'list' | 'tile')) || 'list',
   },

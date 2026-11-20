@@ -19,7 +19,7 @@ export const db = new MinimalNoteDatabase();
 const DEFAULT_PREFERENCES: UserPreferences = {
   theme: 'system',
   is24HourFormat: false,
-  defaultColor: 'indigo',
+  defaultColor: 'default',
   enableSound: true,
   language: 'en',
   viewMode: 'list',

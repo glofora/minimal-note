@@ -295,7 +295,7 @@ export const NoteEditorModal: React.FC = () => {
     setHasReminder(true);
   };
 
-  const colorConfig = NOTE_COLORS[color] || NOTE_COLORS.indigo;
+  const colorConfig = NOTE_COLORS[color] || NOTE_COLORS.default;
 
   return (
     <div className="fixed inset-0 z-[2000] flex items-center justify-center p-0 sm:p-4 bg-background sm:bg-black/60 sm:backdrop-blur-xs animate-in fade-in duration-200">
@@ -318,7 +318,7 @@ export const NoteEditorModal: React.FC = () => {
       />
 
       <div
-        className="relative w-full h-full sm:max-w-xl sm:h-auto sm:max-h-[92vh] flex flex-col bg-card sm:border sm:border-border sm:rounded-3xl shadow-2xl overflow-hidden transition-all"
+        className={`relative w-full h-full sm:max-w-xl sm:h-auto sm:max-h-[92vh] flex flex-col ${colorConfig.bgLight} ${colorConfig.bgDark} sm:border ${colorConfig.borderLight} ${colorConfig.borderDark} sm:rounded-3xl shadow-2xl overflow-hidden transition-all`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Header: Google Keep Style Navigation & Actions */}
@@ -336,7 +336,9 @@ export const NoteEditorModal: React.FC = () => {
             </button>
 
             <div className="flex items-center gap-1.5">
-              <span className={`w-2.5 h-2.5 rounded-full ${colorConfig.dotClass}`} />
+              {color !== 'default' && (
+                <span className={`w-2.5 h-2.5 rounded-full ${colorConfig.dotClass}`} />
+              )}
               <span className="text-xs font-semibold text-muted-foreground">
                 {colorConfig.label}
               </span>
